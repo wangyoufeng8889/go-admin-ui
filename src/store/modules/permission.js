@@ -30,9 +30,9 @@ function hasPathPermission(paths, route) {
 }
 
 /**
-  * 后台查询的菜单数据拼装成路由格式的数据
-  * @param routes
-  */
+ * 后台查询的菜单数据拼装成路由格式的数据
+ * @param routes
+ */
 export function generaMenu(routes, data) {
   data.forEach(item => {
     const menu = {

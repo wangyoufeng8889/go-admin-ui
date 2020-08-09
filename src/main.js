@@ -33,6 +33,16 @@ import BasicLayout from '@/layout/BasicLayout'
 
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
+import AMap from 'vue-amap'
+Vue.use(AMap)
+
+// 初始化vue-amap
+AMap.initAMapApiLoader({
+  // 高德key
+  key: '你的key',
+  // 插件集合 （插件按需引入）
+  plugin: ['AMap.Geolocation']
+})
 
 import '@/utils/dialog'
 
