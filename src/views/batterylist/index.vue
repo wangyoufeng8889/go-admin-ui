@@ -1,169 +1,121 @@
 <template>
-  <BasicLayout>
-    <template #wrapper>
-      <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="DTU编号" prop="dtu_id">
-            <el-input
-              v-model="queryParams.dtu_id"
-              placeholder="请输入DTU编号"
-              clearable
-              size="small"
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="电池编号" prop="pkg_id">
-            <el-input
-              v-model="queryParams.pkg_id"
-              placeholder="请输入电池编号"
-              clearable
-              size="small"
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="电池状态" prop="bms_chargeStatus">
-            <el-select v-model="queryParams.bms_chargeStatus" placeholder="充放电状态" clearable size="small">
-              <el-option
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-form>
+  <div v-if="infoOnOff">
+    <BasicLayout>
 
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button
-              v-permisaction="['system:syspost:add']"
-              type="primary"
-              icon="el-icon-plus"
-              size="mini"
-              @click="handleAdd"
-            >新增</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              v-permisaction="['system:syspost:edit']"
-              type="success"
-              icon="el-icon-edit"
-              size="mini"
-              :disabled="single"
-              @click="handleUpdate"
-            >修改</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              v-permisaction="['system:syspost:remove']"
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              :disabled="multiple"
-              @click="handleDelete"
-            >删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              v-permisaction="['system:syspost:export']"
-              type="warning"
-              icon="el-icon-download"
-              size="mini"
-              @click="handleExport"
-            >导出</el-button>
-          </el-col>
-        </el-row>
-
-        <el-table v-loading="loading" :data="batteryList" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="30" align="lift" />
-          <el-table-column label="ID" width="80" align="center" prop="battery_listId" />
-          <el-table-column label="电池编号" align="center" prop="pkg_id" />
-          <el-table-column label="标称电压" align="center" prop="pkg_nominalVoltage" />
-          <el-table-column label="SOC" align="center" prop="bms_soc" />
-          <el-table-column label="在线状态" align="center" prop="pkg_onOffLineStatus">
-            <el-table-column label="更新时间" align="center" prop="dtu_uptime" />
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.dtu_uptime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="故障状态" align="center" prop="pkg_errStatus" />
-          <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createdAt) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button
-                v-permisaction="['system:syspost:edit']"
-                size="mini"
-                type="text"
-                icon="el-icon-edit"
-                @click="handleUpdate(scope.row)"
-              >修改</el-button>
-              <el-button
-                v-permisaction="['system:syspost:remove']"
-                size="mini"
-                type="text"
-                icon="el-icon-delete"
-                @click="handleDelete(scope.row)"
-              >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="queryParams.pageIndex"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
-
-        <!-- 添加或修改岗位对话框 -->
-        <el-dialog :title="title" :visible.sync="open" width="500px">
-          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <template #wrapper>
+        <el-card class="box-card">
+          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="70px">
             <el-form-item label="电池编号" prop="pkg_id">
-              <el-input v-model="form.pkg_id" placeholder="请输入电池编号" />
+              <el-input
+                v-model="queryParams.pkg_id"
+                placeholder="请输入电池编号"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
             </el-form-item>
             <el-form-item label="DTU编号" prop="dtu_id">
-              <el-input v-model="form.dtu_id" placeholder="请输入DTU编号" />
+              <el-input
+                v-model="queryParams.dtu_id"
+                placeholder="请输入DTU编号"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
             </el-form-item>
             <el-form-item label="电池状态" prop="bms_chargeStatus">
-              <el-radio-group v-model="form.bms_chargeStatus">
-                <el-radio
+              <el-select v-model="queryParams.bms_chargeStatus" placeholder="充放电状态" clearable size="small">
+                <el-option
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
-                  :label="dict.dictValue"
-                >{{ dict.dictLabel }}</el-radio>
-              </el-radio-group>
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-download"
+                size="mini"
+                @click="handleExport"
+              >导出</el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                :disabled="multiple"
+                @click="handleDelete"
+              >删除</el-button>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm">确 定</el-button>
-            <el-button @click="cancel">取 消</el-button>
-          </div>
-        </el-dialog>
-      </el-card>
-    </template>
-  </BasicLayout>
+          <el-table v-loading="loading" :data="batteryList" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="30" align="lift" />
+            <el-table-column label="电池编号" align="center" prop="pkg_id" width="160" />
+            <el-table-column label="标压" align="center" prop="pkg_nominalVoltage" width="50" />
+            <el-table-column label="电量" align="center" prop="bms_soc" width="50" />
+            <el-table-column label="在线状态" align="center" prop="pkg_onOffLineStatus" width="100" />
+            <el-table-column label="更新时间" align="center" prop="dtu_uptime" width="180">
+              <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.dtu_uptime) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="故障" align="center" prop="pkg_errStatus" width="50" />
+            <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
+              <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.createdAt) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button
+                  v-permisaction="['system:syspost:edit']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-view"
+                  @click="handleViewDetail(scope.row)"
+                >详情</el-button>
+                <el-button
+                  v-permisaction="['system:syspost:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="handleDelete(scope.row)"
+                >删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="queryParams.pageIndex"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getList"
+          />
+        </el-card>
+      </template>
+    </BasicLayout>
+
+  </div>
+  <div v-else>
+    <Batteryinfo @returnblist="retumainlist" />
+  </div>
 </template>
 
 <script>
-import { batterylistPost, getPost, delPost, addPost, updatePost } from '@/api/system/post'
+import { getBatteryList, delOneBatteryList } from '@/api/battery/batterylist'
 import { formatJson } from '@/utils'
-
+import Batteryinfo from './onebatteryinfo/batteryinfo'
 export default {
   name: 'Post',
+  components: { Batteryinfo },
   data() {
     return {
+      // 详情开关
+      infoOnOff: true,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -191,35 +143,30 @@ export default {
         bms_chargeStatus: undefined
       },
       // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        pkg_id: [
-          { required: true, message: '电池编号不能为空', trigger: 'blur' }
-        ],
-        dtu_id: [
-          { required: true, message: 'DTU编号不能为空', trigger: 'blur' }
-        ]
-      }
+      form: {}
     }
   },
   created() {
     this.getList()
-    this.getDicts('sys_normal_disable').then(response => {
+    this.getDicts('sys_charge_status').then(response => {
       this.statusOptions = response.data
     })
   },
+
   methods: {
-    /** 查询岗位列表 */
+    retumainlist() {
+      this.infoOnOff = true
+    },
+    /** 查询电池列表 */
     getList() {
       this.loading = true
-      batterylistPost(this.queryParams).then(response => {
+      getBatteryList(this.queryParams).then(response => {
         this.batteryList = response.data.list
         this.total = response.data.count
         this.loading = false
       })
     },
-    // 岗位状态字典翻译
+    // 电池状态字典翻译
     statusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.bms_chargeStatus)
     },
@@ -255,60 +202,19 @@ export default {
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = '添加岗位'
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset()
-
-      const battery_listId = row.battery_listId || this.ids
-      getPost(battery_listId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改岗位'
-      })
-    },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.battery_listId !== undefined) {
-            updatePost(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess('修改成功')
-                this.open = false
-                this.getList()
-              } else {
-                this.msgError(response.msg)
-              }
-            })
-          } else {
-            addPost(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess('新增成功')
-                this.open = false
-                this.getList()
-              } else {
-                this.msgError(response.msg)
-              }
-            })
-          }
-        }
-      })
+    /* 查看电池详情 */
+    handleViewDetail(row) {
+      this.infoOnOff = false
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const postIds = row.battery_listId || this.ids
-      this.$confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', '警告', {
+      const battery_listIds = row.battery_listId || this.ids
+      this.$confirm('是否确认删除电池编号为"' + battery_listIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delPost(postIds)
+        return delOneBatteryList(battery_listIds)
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
@@ -317,21 +223,21 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       // const queryParams = this.queryParams
-      this.$confirm('是否确认导出所有岗位数据项?', '警告', {
+      this.$confirm('是否确认导出所有电池数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['ID', '电池编号', 'DTU编号', '更新时间', 'SOC', '充放电状态', '在线状态']
-          const filterVal = ['battery_listId', 'pkg_id', 'dtu_id', 'dtu_uptime', 'bms_soc', 'bms_chargeStatus', 'pkg_onOffLineStatus']
+          const tHeader = ['ID', '电池编号', 'DTU编号', '更新时间', 'SOC', '充放电状态', '在线状态', '错误状态', '电池串数', '电池类型', '电池容量', '标称电压']
+          const filterVal = ['battery_listId', 'pkg_id', 'dtu_id', 'dtu_uptime', 'bms_soc', 'bms_chargeStatus', 'pkg_onOffLineStatus', 'pkg_errStatus', 'pkg_count', 'pkg_type', 'pkg_capacity', 'pkg_nominalVoltage']
           const list = this.batteryList
           const data = formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '岗位管理',
+            filename: '电池管理',
             autoWidth: true, // Optional
             bookType: 'xlsx' // Optional
           })

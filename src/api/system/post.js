@@ -9,15 +9,6 @@ export function listPost(query) {
   })
 }
 
-// 查询岗位列表
-export function batterylistPost(query) {
-  return request({
-    url: '/user/battery/batterylist',
-    method: 'get',
-    params: query
-  })
-}
-
 // 查询岗位详细
 export function getPost(postId) {
   return request({
