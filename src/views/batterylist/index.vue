@@ -3,26 +3,26 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="岗位编码" prop="postCode">
+          <el-form-item label="岗位编码" prop="dtu_id">
             <el-input
-              v-model="queryParams.postCode"
+              v-model="queryParams.dtu_id"
               placeholder="请输入岗位编码"
               clearable
               size="small"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="岗位名称" prop="postName">
+          <el-form-item label="岗位名称" prop="pkg_id">
             <el-input
-              v-model="queryParams.postName"
+              v-model="queryParams.pkg_id"
               placeholder="请输入岗位名称"
               clearable
               size="small"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="岗位状态" clearable size="small">
+          <el-form-item label="状态" prop="bms_chargeStatus">
+            <el-select v-model="queryParams.bms_chargeStatus" placeholder="岗位状态" clearable size="small">
               <el-option
                 v-for="dict in statusOptions"
                 :key="dict.dictValue"
@@ -80,14 +80,15 @@
 
         <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="岗位编号" width="80" align="center" prop="postId" />
-          <el-table-column label="岗位编码" align="center" prop="postCode" />
-          <el-table-column label="岗位名称" align="center" prop="postName" />
-          <el-table-column label="岗位排序" align="center" prop="sort" />
-          <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
+          <el-table-column label="ID" width="80" align="center" prop="battery_listId" />
+          <el-table-column label="电池编号" align="center" prop="pkg_id" />
+          <el-table-column label="DTU编号" align="center" prop="dtu_id" />
+          <el-table-column label="SOC" align="center" prop="bms_soc" />
+          <el-table-column label="更新时间" align="center" prop="dtu_uptime" />
+          <el-table-column label="电池状态" align="center" prop="bms_chargeStatus" :formatter="statusFormat">
             <template slot-scope="scope">
               <el-tag
-                :type="scope.row.status === '1' ? 'danger' : 'success'"
+                :type="scope.row.bms_chargeStatus === '1' ? 'danger' : 'success'"
                 disable-transitions
               >{{ statusFormat(scope.row) }}</el-tag>
             </template>
@@ -128,17 +129,14 @@
         <!-- 添加或修改岗位对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="500px">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item label="岗位名称" prop="postName">
-              <el-input v-model="form.postName" placeholder="请输入岗位名称" />
+            <el-form-item label="电池编号" prop="pkg_id">
+              <el-input v-model="form.pkg_id" placeholder="请输入岗位名称" />
             </el-form-item>
-            <el-form-item label="岗位编码" prop="postCode">
-              <el-input v-model="form.postCode" placeholder="请输入编码名称" />
+            <el-form-item label="DTU编号" prop="dtu_id">
+              <el-input v-model="form.dtu_id" placeholder="请输入编码名称" />
             </el-form-item>
-            <el-form-item label="岗位顺序" prop="sort">
-              <el-input-number v-model="form.sort" controls-position="right" :min="0" />
-            </el-form-item>
-            <el-form-item label="岗位状态" prop="status">
-              <el-radio-group v-model="form.status">
+            <el-form-item label="电池状态" prop="bms_chargeStatus">
+              <el-radio-group v-model="form.bms_chargeStatus">
                 <el-radio
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
@@ -190,22 +188,19 @@ export default {
       queryParams: {
         pageIndex: 1,
         pageSize: 10,
-        postCode: undefined,
-        postName: undefined,
-        status: undefined
+        dtu_id: undefined,
+        pkg_id: undefined,
+        bms_chargeStatus: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        postName: [
-          { required: true, message: '岗位名称不能为空', trigger: 'blur' }
+        pkg_id: [
+          { required: true, message: '电池编号不能为空', trigger: 'blur' }
         ],
-        postCode: [
-          { required: true, message: '岗位编码不能为空', trigger: 'blur' }
-        ],
-        sort: [
-          { required: true, message: '岗位顺序不能为空', trigger: 'blur' }
+        dtu_id: [
+          { required: true, message: 'DTU编号不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -228,7 +223,7 @@ export default {
     },
     // 岗位状态字典翻译
     statusFormat(row) {
-      return this.selectDictLabel(this.statusOptions, row.status)
+      return this.selectDictLabel(this.statusOptions, row.bms_chargeStatus)
     },
     // 取消按钮
     cancel() {
@@ -238,11 +233,10 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        postId: undefined,
-        postCode: undefined,
-        postName: undefined,
-        sort: 0,
-        status: '0',
+        battery_listId: undefined,
+        pkg_id: undefined,
+        dtu_id: undefined,
+        bms_chargeStatus: '0',
         remark: undefined
       }
       this.resetForm('form')
@@ -259,7 +253,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.postId)
+      this.ids = selection.map(item => item.battery_listId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -273,8 +267,8 @@ export default {
     handleUpdate(row) {
       this.reset()
 
-      const postId = row.postId || this.ids
-      getPost(postId).then(response => {
+      const battery_listId = row.battery_listId || this.ids
+      getPost(battery_listId).then(response => {
         this.form = response.data
         this.open = true
         this.title = '修改岗位'
@@ -284,7 +278,7 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.postId !== undefined) {
+          if (this.form.battery_listId !== undefined) {
             updatePost(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess('修改成功')
@@ -310,7 +304,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const postIds = row.postId || this.ids
+      const postIds = row.battery_listId || this.ids
       this.$confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -332,8 +326,8 @@ export default {
       }).then(() => {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['岗位编号', '岗位编码', '岗位名称', '排序', '创建时间']
-          const filterVal = ['postId', 'postCode', 'postName', 'sort', 'createdAt']
+          const tHeader = ['ID', '电池编号', 'DTU编号', 'SOC', '更新时间']
+          const filterVal = ['battery_listId', 'pkg_id', 'dtu_id', 'bms_soc', 'dtu_uptime']
           const list = this.postList
           const data = formatJson(filterVal, list)
           excel.export_json_to_excel({
