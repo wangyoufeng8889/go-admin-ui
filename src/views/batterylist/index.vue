@@ -3,26 +3,26 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="岗位编码" prop="dtu_id">
+          <el-form-item label="DTU编号" prop="dtu_id">
             <el-input
               v-model="queryParams.dtu_id"
-              placeholder="请输入岗位编码"
+              placeholder="请输入DTU编号"
               clearable
               size="small"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="岗位名称" prop="pkg_id">
+          <el-form-item label="电池编号" prop="pkg_id">
             <el-input
               v-model="queryParams.pkg_id"
-              placeholder="请输入岗位名称"
+              placeholder="请输入电池编号"
               clearable
               size="small"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="bms_chargeStatus">
-            <el-select v-model="queryParams.bms_chargeStatus" placeholder="岗位状态" clearable size="small">
+          <el-form-item label="电池状态" prop="bms_chargeStatus">
+            <el-select v-model="queryParams.bms_chargeStatus" placeholder="充放电状态" clearable size="small">
               <el-option
                 v-for="dict in statusOptions"
                 :key="dict.dictValue"
@@ -78,21 +78,19 @@
           </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center" />
+        <el-table v-loading="loading" :data="batteryList" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="30" align="lift" />
           <el-table-column label="ID" width="80" align="center" prop="battery_listId" />
           <el-table-column label="电池编号" align="center" prop="pkg_id" />
-          <el-table-column label="DTU编号" align="center" prop="dtu_id" />
+          <el-table-column label="标称电压" align="center" prop="pkg_nominalVoltage" />
           <el-table-column label="SOC" align="center" prop="bms_soc" />
-          <el-table-column label="更新时间" align="center" prop="dtu_uptime" />
-          <el-table-column label="电池状态" align="center" prop="bms_chargeStatus" :formatter="statusFormat">
+          <el-table-column label="在线状态" align="center" prop="pkg_onOffLineStatus">
+            <el-table-column label="更新时间" align="center" prop="dtu_uptime" />
             <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.bms_chargeStatus === '1' ? 'danger' : 'success'"
-                disable-transitions
-              >{{ statusFormat(scope.row) }}</el-tag>
+              <span>{{ parseTime(scope.row.dtu_uptime) }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="故障状态" align="center" prop="pkg_errStatus" />
           <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createdAt) }}</span>
@@ -130,10 +128,10 @@
         <el-dialog :title="title" :visible.sync="open" width="500px">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
             <el-form-item label="电池编号" prop="pkg_id">
-              <el-input v-model="form.pkg_id" placeholder="请输入岗位名称" />
+              <el-input v-model="form.pkg_id" placeholder="请输入电池编号" />
             </el-form-item>
             <el-form-item label="DTU编号" prop="dtu_id">
-              <el-input v-model="form.dtu_id" placeholder="请输入编码名称" />
+              <el-input v-model="form.dtu_id" placeholder="请输入DTU编号" />
             </el-form-item>
             <el-form-item label="电池状态" prop="bms_chargeStatus">
               <el-radio-group v-model="form.bms_chargeStatus">
@@ -177,7 +175,7 @@ export default {
       // 总条数
       total: 0,
       // 岗位表格数据
-      postList: [],
+      batteryList: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
@@ -216,7 +214,7 @@ export default {
     getList() {
       this.loading = true
       batterylistPost(this.queryParams).then(response => {
-        this.postList = response.data.list
+        this.batteryList = response.data.list
         this.total = response.data.count
         this.loading = false
       })
@@ -326,9 +324,9 @@ export default {
       }).then(() => {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['ID', '电池编号', 'DTU编号', 'SOC', '更新时间']
-          const filterVal = ['battery_listId', 'pkg_id', 'dtu_id', 'bms_soc', 'dtu_uptime']
-          const list = this.postList
+          const tHeader = ['ID', '电池编号', 'DTU编号', '更新时间', 'SOC', '充放电状态', '在线状态']
+          const filterVal = ['battery_listId', 'pkg_id', 'dtu_id', 'dtu_uptime', 'bms_soc', 'bms_chargeStatus', 'pkg_onOffLineStatus']
+          const list = this.batteryList
           const data = formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader,
