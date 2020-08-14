@@ -2,7 +2,7 @@ import request from '@/utils/request'
 // 查询电池列表
 export function getBatteryList(query) {
   return request({
-    url: '/user/battery/batterylist',
+    url: '/api/bm1/battery/batterylist',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function getBatteryList(query) {
 export function delOneBatteryList(battery_listId) {
   console.log('shanchudianchi' + battery_listId)
   return request({
-    url: '/user/battery/batterylist/' + battery_listId,
+    url: '/api/bm1/battery/batterylist/' + battery_listId,
     method: 'delete'
   })
 }

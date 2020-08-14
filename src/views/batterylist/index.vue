@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { getBatteryList, delOneBatteryList } from '@/api/battery/batterylist'
+import { getBatteryList, delOneBatteryList } from '@/api/batterymanage/batterylist'
 import { formatJson } from '@/utils'
 import Batteryinfo from './onebatteryinfo/batteryinfo'
 export default {
