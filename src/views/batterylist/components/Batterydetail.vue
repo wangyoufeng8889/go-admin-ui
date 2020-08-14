@@ -1,59 +1,76 @@
 <template>
-  <el-table
-    :data="tableData"
-    style="width: 100%"
-  >
-    <el-table-column
-      prop="date"
-      label="日期"
-      width="180"
-    />
-    <el-table-column
-      prop="name"
-      label="姓名"
-      width="180"
-    />
-    <el-table-column
-      prop="address"
-      label="地址"
-    >
-      <el-button icon="el-icon-refresh" size="mini" @click="onlist">重置</el-button>
-    </el-table-column>
-  </el-table>
-</template>
+  <div>
+    <el-row :gutter="15">
+      <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
+        <el-col :span="12">
+          <label>电池详情</label>
+        </el-col>
+        <el-col :span="12" align="right">
+          <el-button type="warning" icon="el-icon-back" align="right" @click="onReturnBL">返回电池列表</el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="电池编号" prop="pkgid">
+            <el-input v-model="formData.pkgid" readonly :style="{width: '100%'}" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="单行文本" prop="field104">
+            <el-input v-model="formData.field104" placeholder="请输入单行文本" clearable :style="{width: '100%'}" />
+          </el-form-item>
+        </el-col>
 
+      </el-form>
+    </el-row>
+  </div>
+</template>
 <script>
 export default {
+  components: {},
+  props: [],
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      formData: {
+        pkgid: undefined,
+        field104: undefined
+      },
+      rules: {
+        pkgid: [{
+          required: true,
+          message: '',
+          trigger: 'blur'
+        }],
+        field104: [{
+          required: true,
+          message: '请输入单行文本',
+          trigger: 'blur'
+        }]
+      }
     }
   },
+  computed: {},
+  watch: {},
+  created() {},
+  mounted() {},
   methods: {
-    onlist() {
+    onReturnBL() {
       const data = {
         goPage: 'Batterylist',
         pkgid: ''
       }
       this.$emit('goBatteryPage', data)
+    },
+    submitForm() {
+      this.$refs['elForm'].validate(valid => {
+        if (!valid) return
+        // TODO 提交表单
+      })
+    },
+    resetForm() {
+      this.$refs['elForm'].resetFields()
     }
   }
-
 }
+
 </script>
+<style>
+</style>
