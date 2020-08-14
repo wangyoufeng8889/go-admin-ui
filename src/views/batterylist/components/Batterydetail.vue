@@ -47,7 +47,11 @@ export default {
   },
   methods: {
     onlist() {
-      this.$emit('returnblist')
+      const data = {
+        goPage: 'Batterylist',
+        pkgid: ''
+      }
+      this.$emit('goBatteryPage', data)
     }
   }
 
