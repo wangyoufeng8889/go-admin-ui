@@ -8,26 +8,100 @@
           </el-header>
           <el-main>
             <el-row>
-              <el-col class="batterydetail" :span="16">
+              <el-col class="batterydetail" :span="6">
                 <el-form ref="ruleForm" :model="ruleForm" label-width="100px" class="demo-ruleForm">
                   <div>
-                    <el-form-item label="电池编号:" />
+                    <el-form-item label="电池编号:">
+                      {{ batteryListInfo.pkg_id }}
+                    </el-form-item>
                   </div>
+
                   <div>
-                    <el-form-item label="活动名称">
-                      2
+                    <el-form-item label="更新时间:">
+                      {{ parseTime(batteryListInfo.dtu_uptime) }}
                     </el-form-item>
                   </div>
                   <div>
-                    <el-form-item label="活动名称">
-                      3
+                    <el-form-item label="电池类型:">
+                      <div v-if="batteryListInfo.pkg_type == '1'">
+                        三元锂
+                      </div>
+                      <div v-else>
+                        磷酸铁锂
+                      </div>
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="标称电压:">
+                      {{ parseFloat(batteryListInfo.pkg_nominalVoltage)/10 }}V
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="额定容量:">
+                      {{ parseFloat(batteryListInfo.pkg_capacity)/100 }}Ah
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="DTU编号:">
+                      {{ batteryListInfo.dtu_id }}
                     </el-form-item>
                   </div>
                 </el-form>
               </el-col>
-              <el-col :span="6">
+              <el-col class="batterydetail" :span="6">
+                <el-form ref="ruleForm" :model="ruleForm" label-width="100px" class="demo-ruleForm">
+                  <div>
+                    <el-form-item label="在线状态:">
+                      <div v-if="batteryListInfo.pkg_onOffLineStatus == '1'">
+                        <el-tag type="success">在线</el-tag>
+                      </div>
+                      <div v-else>
+                        <el-tag type="danger">离线</el-tag>
+                      </div>
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="电量:">
+                      {{ batteryListInfo.bms_soc }}%
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="充放电状态:">
+                      {{ batteryListInfo.bms_chargeStatus }}
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="故障状态:">
+                      {{ batteryListInfo.pkg_errStatus }}
+                    </el-form-item>
+                  </div>
+
+                  <div>
+                    <el-form-item label="电池串数:">
+                      {{ batteryListInfo.pkg_count }}
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="DTU类型:">
+                      <div v-if="batteryListInfo.dtu_type == '6'">
+                        4G-CAT1
+                      </div>
+                      <div v-if="batteryListInfo.dtu_type == '5'">
+                        5G
+                      </div>
+                      <div v-if="batteryListInfo.dtu_type == '4'">
+                        4G-CAT4
+                      </div>
+                      <div v-if="batteryListInfo.dtu_type == '2'">
+                        2G
+                      </div>
+                    </el-form-item>
+                  </div>
+                </el-form>
+              </el-col>
+              <el-col :span="12">
                 <div>
-                  <gdmap />
+                  <gdmap :data-init="batteryListInfo" />
                 </div>
               </el-col>
             </el-row>
@@ -51,7 +125,7 @@ export default {
       // 总条数
       total: 0,
       // 岗位表格数据
-      batteryListInfo: [],
+      batteryListInfo: {},
       ruleForm: {
         name: '',
         region: '',
@@ -110,8 +184,10 @@ export default {
 </script>
 <style scoped>
   .demo-ruleForm{
+    /*
     display: flex;
     justify-content: space-between;
+    */
   }
   .demo-ruleForm>div{
     flex:1

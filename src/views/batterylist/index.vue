@@ -62,8 +62,6 @@
         <el-table v-loading="loading" :data="batteryList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="30" align="lift" />
           <el-table-column label="电池编号" align="center" prop="pkg_id" width="160" />
-          <el-table-column label="标压" align="center" prop="pkg_nominalVoltage" width="50" />
-          <el-table-column label="电量" align="center" prop="bms_soc" width="50" />
           <el-table-column label="在线状态" align="center" prop="pkg_onOffLineStatus" width="100">
             <template slot-scope="scope">
               <div v-if="scope.row.pkg_onOffLineStatus == '1'">
@@ -74,17 +72,35 @@
               </div>
             </template>
           </el-table-column>
+          <el-table-column label="标压" align="center" prop="pkg_nominalVoltage" width="50">
+            <template slot-scope="scope">
+              {{ parseFloat(scope.row.pkg_nominalVoltage)/10 }}V
+            </template>
+          </el-table-column>
+          <el-table-column label="电量" align="center" prop="bms_soc" width="50">
+            <template slot-scope="scope">
+              {{ scope.row.bms_soc }}%
+            </template>
+          </el-table-column>
+          <el-table-column label="充放电状态" align="center" prop="bms_chargeStatus" width="100">
+            <template slot-scope="scope">
+              <div v-if="scope.row.bms_chargeStatus == '0'">
+                <el-tag type="info">搁置</el-tag>
+              </div>
+              <div v-if="scope.row.bms_chargeStatus == '1'">
+                <el-tag type="success">充电</el-tag>
+              </div>
+              <div v-if="scope.row.bms_chargeStatus == '2'">
+                <el-tag type="danger">放电</el-tag>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="更新时间" align="center" prop="dtu_uptime" width="180">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.dtu_uptime) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="故障" align="center" prop="pkg_errStatus" width="50" />
-          <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createdAt) }}</span>
-            </template>
-          </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -121,7 +137,7 @@ import { getBatteryList, delOneBatteryList } from '@/api/batterymanage/batteryli
 import { formatJson } from '@/utils'
 
 export default {
-  name: 'Post',
+  name: 'Batterylist',
   data() {
     return {
       // 遮罩层
