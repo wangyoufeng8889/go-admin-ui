@@ -42,14 +42,50 @@
                     </el-form-item>
                   </div>
                   <div>
+                    <el-form-item label="电池串数:">
+                      {{ batteryListInfo.pkg_count }}
+                    </el-form-item>
+                  </div>
+                  <div>
                     <el-form-item label="DTU编号:">
                       {{ batteryListInfo.dtu_id }}
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="DTU类型:">
+                      <div v-if="batteryListInfo.dtu_type == '6'">
+                        4G-CAT1
+                      </div>
+                      <div v-if="batteryListInfo.dtu_type == '5'">
+                        5G
+                      </div>
+                      <div v-if="batteryListInfo.dtu_type == '4'">
+                        4G-CAT4
+                      </div>
+                      <div v-if="batteryListInfo.dtu_type == '2'">
+                        2G
+                      </div>
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <el-form-item label="网络强度:">
+
+                      <div v-if="batteryListInfo.dtu_csq > '25'">
+                        <el-tag type="success">{{ batteryListInfo.dtu_csq }}</el-tag>
+                      </div>
+                      <div v-else-if="batteryListInfo.dtu_csq < '25' && batteryListInfo.dtu_csq > '15'">
+                        <el-tag type="warning">{{ batteryListInfo.dtu_csq }}</el-tag>
+                      </div>
+                      <div v-else>
+                        <el-tag type="danger">{{ batteryListInfo.dtu_csq }}</el-tag>
+                      </div>
                     </el-form-item>
                   </div>
                 </el-form>
               </el-col>
               <el-col class="batterydetail" :span="6">
                 <el-form ref="ruleForm" :model="ruleForm" label-width="100px" class="demo-ruleForm">
+                  <br><br>
                   <div>
                     <el-form-item label="在线状态:">
                       <div v-if="batteryListInfo.pkg_onOffLineStatus == '1'">
@@ -73,28 +109,6 @@
                   <div>
                     <el-form-item label="故障状态:">
                       {{ batteryListInfo.pkg_errStatus }}
-                    </el-form-item>
-                  </div>
-
-                  <div>
-                    <el-form-item label="电池串数:">
-                      {{ batteryListInfo.pkg_count }}
-                    </el-form-item>
-                  </div>
-                  <div>
-                    <el-form-item label="DTU类型:">
-                      <div v-if="batteryListInfo.dtu_type == '6'">
-                        4G-CAT1
-                      </div>
-                      <div v-if="batteryListInfo.dtu_type == '5'">
-                        5G
-                      </div>
-                      <div v-if="batteryListInfo.dtu_type == '4'">
-                        4G-CAT4
-                      </div>
-                      <div v-if="batteryListInfo.dtu_type == '2'">
-                        2G
-                      </div>
                     </el-form-item>
                   </div>
                 </el-form>
