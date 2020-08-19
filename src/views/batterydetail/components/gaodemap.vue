@@ -9,7 +9,6 @@
         />
       </el-amap>
     </div>
-
   </div>
 </template>
 <script>
