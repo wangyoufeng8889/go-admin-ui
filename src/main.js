@@ -34,8 +34,6 @@ import BasicLayout from '@/layout/BasicLayout'
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
 import AMap from 'vue-amap'
-Vue.use(AMap)
-
 // 初始化vue-amap
 AMap.initAMapApiLoader({
   // 高德key
@@ -43,7 +41,7 @@ AMap.initAMapApiLoader({
   // 插件集合 （插件按需引入）
   plugin: ['AMap.Geolocation']
 })
-
+Vue.use(AMap)
 import '@/utils/dialog'
 
 // 全局方法挂载

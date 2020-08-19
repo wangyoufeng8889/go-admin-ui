@@ -119,10 +119,11 @@
                 </div>
               </el-col>
             </el-row>
+
             <el-row>
               <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-                <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-                <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+                <el-tab-pane label="配置管理" name="first">配置管理</el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="second"><gaodemovealong /></el-tab-pane>
                 <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
                 <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
               </el-tabs>
@@ -130,15 +131,17 @@
           </el-main>
         </el-container>
       </el-card>
+
     </template>
   </BasicLayout>
 </template>
 <script>
 import gdmap from './components/gaodemap'
+import gaodemovealong from './components/gaodemovealong'
 import { getBatteryList } from '@/api/batterymanage/batterylist'
 export default {
   name: 'Batterydetail',
-  components: { gdmap },
+  components: { gdmap, gaodemovealong },
   props: [],
   data() {
     return {
