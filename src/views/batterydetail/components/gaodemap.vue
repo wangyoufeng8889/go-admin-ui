@@ -45,7 +45,7 @@ export default {
             // o 是高德地图定位插件实例
             o.getCurrentPosition((status, result) => {
               if (result && result.position) {
-                self.lng = 119.987803
+                self.lng = 110.987803
                 self.lat = 30.276918
                 self.center = [self.lng, self.lat]
                 self.loaded = true
@@ -61,7 +61,6 @@ export default {
     setTimeout(() => {
       this.center.push(this.dataInit.dtu_longitude)
       this.center.push(this.dataInit.dtu_latitude)
-      console.log(this.center)
       this.ISdata = true
     }, 1000)
   },

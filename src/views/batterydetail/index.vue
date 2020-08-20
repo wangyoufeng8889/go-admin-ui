@@ -97,6 +97,19 @@
                     </el-form-item>
                   </div>
                   <div>
+                    <el-form-item label="定位状态:">
+                      <div v-if="batteryListInfo.dtu_locateMode == '1'">
+                        <el-tag type="success">GPS</el-tag>
+                      </div>
+                      <div v-if="batteryListInfo.dtu_locateMode == '2'">
+                        <el-tag type="danger">基站</el-tag>
+                      </div>
+                      <div v-if="batteryListInfo.dtu_locateMode == '3'">
+                        <el-tag type="warning">WIFI</el-tag>
+                      </div>
+                    </el-form-item>
+                  </div>
+                  <div>
                     <el-form-item label="电量:">
                       {{ batteryListInfo.bms_soc }}%
                     </el-form-item>
@@ -123,7 +136,7 @@
             <el-row>
               <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="配置管理" name="first">配置管理</el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="second"><gaodemovealong /></el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="second"><gaodemovealong :data-init="batteryListInfo" /></el-tab-pane>
                 <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
                 <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
               </el-tabs>
