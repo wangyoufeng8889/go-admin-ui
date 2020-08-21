@@ -87,7 +87,7 @@
                 <el-form ref="ruleForm" :model="ruleForm" label-width="100px" class="demo-ruleForm">
                   <br><br>
                   <div>
-                    <el-form-item label="在线状态:">
+                    <el-form-item label="电池状态:">
                       <div v-if="batteryListInfo.pkg_onOffLineStatus == '1'">
                         <el-tag type="success">在线</el-tag>
                       </div>
@@ -122,6 +122,17 @@
                   <div>
                     <el-form-item label="故障状态:">
                       {{ batteryListInfo.pkg_errStatus }}
+                    </el-form-item>
+                  </div>
+                  <br><br>
+                  <div>
+                    <el-form-item label="DTU状态:">
+                      <div v-if="batteryListInfo.dtu_onOffLineStatus == '1'">
+                        <el-tag type="success">在线</el-tag>
+                      </div>
+                      <div v-else>
+                        <el-tag type="danger">离线</el-tag>
+                      </div>
                     </el-form-item>
                   </div>
                 </el-form>
