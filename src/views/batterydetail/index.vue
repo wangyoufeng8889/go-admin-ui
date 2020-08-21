@@ -116,7 +116,15 @@
                   </div>
                   <div>
                     <el-form-item label="充放电状态:">
-                      {{ batteryListInfo.bms_chargeStatus }}
+                      <div v-if="batteryListInfo.bms_chargeStatus == '0'">
+                        <el-tag type="warning">搁置</el-tag>
+                      </div>
+                      <div v-if="batteryListInfo.bms_chargeStatus == '1'">
+                        <el-tag type="danger">放电</el-tag>
+                      </div>
+                      <div v-if="batteryListInfo.bms_chargeStatus == '2'">
+                        <el-tag type="success">充电</el-tag>
+                      </div>
                     </el-form-item>
                   </div>
                   <div>
