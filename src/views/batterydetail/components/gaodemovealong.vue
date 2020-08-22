@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { getBatteryDetail_dtustatusinfo } from '@/api/batterymanage/batterydetail'
+import { getDTUDetailDtuStatusInfo } from '@/api/batterymanage/dtudetail'
 // NPM 方式
 import { lazyAMapApiLoaderInstance } from 'vue-amap'
 // import carUrl from 'https://webapi.amap.com/images/car.png'
@@ -41,8 +41,8 @@ export default {
       queryParams: {
         dtu_id: undefined,
         pkg_id: undefined,
-        startdate: undefined,
-        enddate: undefined
+        startTime: undefined,
+        endTime: undefined
       },
       trackdata: [],
       gpsData: []
@@ -53,7 +53,8 @@ export default {
       this.mapcenter.center.push(this.dataInit.dtu_longitude)
       this.mapcenter.center.push(this.dataInit.dtu_latitude)
       this.queryParams.pkg_id = this.dataInit.pkg_id
-      // console.log("queryParams",this.queryParams)
+      console.log('dataInit', this.dataInit)
+      console.log('queryParams', this.queryParams)
       this.initMap()
       // console.log('thisDate:', this.startTime)
       this.ISdata = true
@@ -64,8 +65,8 @@ export default {
     getTrackData() {
       this.loading = true
       // console.log(this.queryParams,'this.queryParams')
-      getBatteryDetail_dtustatusinfo(this.queryParams).then(response => {
-        // console.log("response=",response)
+      getDTUDetailDtuStatusInfo(this.queryParams).then(response => {
+        console.log('response=', response)
         this.trackdata = response.data
         const listData = []
         for (var i = 0; i < this.trackdata.length; i++) {
@@ -79,14 +80,18 @@ export default {
         this.gpsData = listData
         this.loading = false
         // console.log("gpsData=",this.gpsData)
+        const add = []
+        add.push(this.trackdata[0].dtu_longitude)
+        add.push(this.trackdata[0].dtu_latitude)
+        this.mapcenter.center.push(add)
         console.log('mapcenter=', this.mapcenter)
         this.initPage()
       })
     },
     findTrackData() {
       if (this.startTime.length !== 0) {
-        this.queryParams.startdate = this.startTime[0]
-        this.queryParams.enddate = this.startTime[1]
+        this.queryParams.startTime = this.startTime[0]
+        this.queryParams.endTime = this.startTime[1]
       }
       // console.log('thisDate:', this.startTime)
       // this.initPage()
@@ -123,8 +128,8 @@ export default {
     //   })
     // },
     // getDurationGPSData() {
-    //   this.params.startdate= this.startTime[0];
-    //   this.params.enddate= this.startTime[1];
+    //   this.params.startTime= this.startTime[0];
+    //   this.params.endTime= this.startTime[1];
     //   this.$http.get('api/contrail/durationLocations', { params: {startTime: this.startTime[0], endTime: this.startTime[1] }}).then(result => {
     //     const code = result.data.code
     //     const gpsData = result.data.data

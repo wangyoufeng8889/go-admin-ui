@@ -9,9 +9,9 @@ export function getBatteryList(query) {
 }
 
 // 删除电池
-export function delOneBatteryList(battery_listId) {
+export function delOneBatteryList(bms_specinfoId) {
   return request({
-    url: '/api/bm1/battery/batterylist/' + battery_listId,
+    url: '/api/bm1/battery/batterylist/' + bms_specinfoId,
     method: 'delete'
   })
 }

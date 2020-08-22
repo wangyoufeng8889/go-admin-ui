@@ -3,15 +3,6 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="70px">
-          <el-form-item label="电池编号" prop="pkg_id">
-            <el-input
-              v-model="queryParams.pkg_id"
-              placeholder="请输入电池编号"
-              clearable
-              size="small"
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
           <el-form-item label="DTU编号" prop="dtu_id">
             <el-input
               v-model="queryParams.dtu_id"
@@ -21,25 +12,14 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="电池状态" prop="bms_chargeStatus">
-            <el-select v-model="queryParams.bms_chargeStatus" placeholder="充放电状态" clearable size="small">
-              <el-option
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="网络状态" prop="pkg_onOffLineStatus">
-            <el-select v-model="queryParams.pkg_onOffLineStatus" placeholder="是否在线" clearable size="small">
-              <el-option
-                v-for="dict in statusOnOff"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
+          <el-form-item label="电池编号" prop="pkg_id">
+            <el-input
+              v-model="queryParams.pkg_id"
+              placeholder="请输入电池编号"
+              clearable
+              size="small"
+              @keyup.enter.native="handleQuery"
+            />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -59,48 +39,15 @@
             >删除</el-button>
           </el-form-item>
         </el-form>
-        <el-table v-loading="loading" :data="batteryList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="dtuList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="30" align="lift" />
+          <el-table-column label="DTU编号" align="center" prop="dtu_id" width="160" />
           <el-table-column label="电池编号" align="center" prop="pkg_id" width="160" />
-          <el-table-column label="在线状态" align="center" prop="pkg_onOffLineStatus" width="100">
-            <template slot-scope="scope">
-              <div v-if="scope.row.pkg_onOffLineStatus == '1'">
-                <el-tag type="success">在线</el-tag>
-              </div>
-              <div v-else>
-                <el-tag type="danger">离线</el-tag>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="标压" align="center" prop="pkg_nominalVoltage" width="50">
-            <template slot-scope="scope">
-              {{ parseFloat(scope.row.pkg_nominalVoltage)/10 }}V
-            </template>
-          </el-table-column>
-          <el-table-column label="电量" align="center" prop="bms_soc" width="50">
-            <template slot-scope="scope">
-              {{ scope.row.bms_soc }}%
-            </template>
-          </el-table-column>
-          <el-table-column label="充放电状态" align="center" prop="bms_chargeStatus" width="100">
-            <template slot-scope="scope">
-              <div v-if="scope.row.bms_chargeStatus == '0'">
-                <el-tag type="info">搁置</el-tag>
-              </div>
-              <div v-if="scope.row.bms_chargeStatus == '1'">
-                <el-tag type="success">充电</el-tag>
-              </div>
-              <div v-if="scope.row.bms_chargeStatus == '2'">
-                <el-tag type="danger">放电</el-tag>
-              </div>
-            </template>
-          </el-table-column>
           <el-table-column label="更新时间" align="center" prop="dtu_uptime" width="180">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.dtu_uptime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="故障" align="center" prop="pkg_errStatus" width="50" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -133,11 +80,11 @@
 </template>
 
 <script>
-import { getBatteryList, delOneBatteryList } from '@/api/batterymanage/batterylist'
+import { getDTUList, delOneDTUList } from '@/api/batterymanage/dtulist'
 import { formatJson } from '@/utils'
 
 export default {
-  name: 'Batterylist',
+  name: 'DtuList',
   data() {
     return {
       // 遮罩层
@@ -151,23 +98,24 @@ export default {
       // 总条数
       total: 0,
       // 岗位表格数据
-      batteryList: [],
+      dtuList: [],
       // 弹出层标题
-      title: '',
+      title: 'hello',
       // 是否显示弹出层
       open: false,
       // 状态数据字典
-      statusOptions: [],
+      // statusOptions: [],
       // 在线状态
-      statusOnOff: [],
+      // statusOnOff: [],
       // 查询参数
       queryParams: {
         pageIndex: 1,
         pageSize: 10,
         dtu_id: undefined,
-        pkg_id: undefined,
-        bms_chargeStatus: undefined,
-        pkg_onOffLineStatus: undefined
+        pkg_id: undefined
+        // pkg_type: undefined
+        // bms_chargeStatus: undefined,
+        // pkg_onOffLineStatus: undefined
       },
       // 表单参数
       form: {}
@@ -175,28 +123,31 @@ export default {
   },
   created() {
     this.getList()
-    this.getDicts('sys_charge_status').then(response => {
-      this.statusOptions = response.data
-    })
-    this.getDicts('sys_net_status').then(response => {
-      this.statusOnOff = response.data
-    })
+    // this.getDicts('sys_pkg_type').then(response => {
+    // this.pkg_typeTable = response.data
+    // })
+    // this.getDicts('sys_net_status').then(response => {
+    // this.statusOnOff = response.data
+    // })
   },
-
+  activated() {
+    // 进入页面时自动刷新
+    this.init()
+  },
   methods: {
     /** 查询电池列表 */
     getList() {
       this.loading = true
-      getBatteryList(this.queryParams).then(response => {
-        this.batteryList = response.data.list
+      getDTUList(this.queryParams).then(response => {
+        this.dtuList = response.data.list
         this.total = response.data.count
         this.loading = false
       })
     },
-    // 电池状态字典翻译
+    // DTU状态字典翻译
     statusFormat(row) {
-      this.selectDictLabel(this.statusOptions, row.bms_chargeStatus)
-      this.selectDictLabel(this.statusOnOff, row.pkg_onOffLineStatus)
+      // this.selectDictLabel(this.pkg_typeTable, row.pkg_type)
+      // this.selectDictLabel(this.statusOnOff, row.pkg_onOffLineStatus)
       return
     },
     // 取消按钮
@@ -207,11 +158,9 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        battery_listId: undefined,
+        dtuPkg_listId: undefined,
         pkg_id: undefined,
         dtu_id: undefined,
-        bms_chargeStatus: '0',
-        pkg_onOffLineStatus: '0',
         remark: undefined
       }
       this.resetForm('form')
@@ -232,20 +181,20 @@ export default {
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
-    /* 查看电池详情 */
+    /* 查看DTU详情 */
     handleViewDetail(row) {
       console.log(row)
-      this.$router.push({ name: 'batterydetail', params: { id: row.pkg_id }})
+      this.$router.push({ name: 'dtudetail', params: { id: row.dtu_id }})
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const battery_listIds = row.battery_listId || this.ids
-      this.$confirm('是否确认删除电池编号为"' + battery_listIds + '"的数据项?', '警告', {
+      const dtu_listIds = row.dtu_id || this.ids
+      this.$confirm('是否确认删除DTU编号为"' + dtu_listIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delOneBatteryList(battery_listIds)
+        return delOneDTUList(dtu_listIds)
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
@@ -254,21 +203,21 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       // const queryParams = this.queryParams
-      this.$confirm('是否确认导出所有电池数据项?', '警告', {
+      this.$confirm('是否确认导出所有DTU数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['ID', '电池编号', 'DTU编号', '更新时间', 'SOC', '充放电状态', '在线状态', '错误状态', '电池串数', '电池类型', '电池容量', '标称电压']
-          const filterVal = ['battery_listId', 'pkg_id', 'dtu_id', 'dtu_uptime', 'bms_soc', 'bms_chargeStatus', 'pkg_onOffLineStatus', 'pkg_errStatus', 'pkg_count', 'pkg_type', 'pkg_capacity', 'pkg_nominalVoltage']
-          const list = this.batteryList
+          const tHeader = ['ID', '更新时间', 'DTU编号', '电池编号']
+          const filterVal = ['dtuPkg_listId', 'dtu_uptime', 'dtu_id', 'pkg_id']
+          const list = this.dtuList
           const data = formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '电池管理',
+            filename: 'DTU绑定关系信息',
             autoWidth: true, // Optional
             bookType: 'xlsx' // Optional
           })

@@ -147,15 +147,14 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <gdmap :data-init="batteryListInfo" />
+                  <gdmap :data-init="dtu_statusInfoCur" />
                 </div>
               </el-col>
             </el-row>
-
             <el-row>
               <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="配置管理" name="first">配置管理</el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="second"><gaodemovealong :data-init="batteryListInfo" /></el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="second"><gaodemovealong :data-init="dtu_statusInfoCur" /></el-tab-pane>
                 <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
                 <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
               </el-tabs>
@@ -171,6 +170,7 @@
 import gdmap from './components/gaodemap'
 import gaodemovealong from './components/gaodemovealong'
 import { getBatteryList } from '@/api/batterymanage/batterylist'
+import { getDTUDetailDtuSpecInfo, getDTUDetailDtuStatusInfo } from '@/api/batterymanage/dtudetail'
 export default {
   name: 'Batterydetail',
   components: { gdmap, gaodemovealong },
@@ -180,10 +180,10 @@ export default {
       activeName: 'first',
       // 遮罩层
       loading: true,
-      // 总条数
-      total: 0,
       // 岗位表格数据
       batteryListInfo: {},
+      dtu_statusInfoCur: {},
+      dtu_specinfo: {},
       ruleForm: {
         name: '',
         region: '',
@@ -200,9 +200,8 @@ export default {
       },
       // 查询参数
       queryParams: {
-        pageIndex: 1,
-        pageSize: 10,
-        pkg_id: undefined
+        pkg_id: undefined,
+        is_oneList: 'YES'
       }
     }
   },
@@ -223,9 +222,16 @@ export default {
       this.loading = true
       getBatteryList(this.queryParams).then(response => {
         this.batteryListInfo = response.data.list[0]
-        this.total = response.data.count
         this.loading = false
-        console.log(this.batteryListInfo)
+        console.log('getBatteryList', response)
+      })
+      getDTUDetailDtuStatusInfo(this.queryParams).then(response => {
+        this.dtu_statusInfoCur = response.data[0]
+        console.log('getDTUDetailDtuStatusInfo', response)
+      })
+      getDTUDetailDtuSpecInfo(this.queryParams).then(response => {
+        this.dtu_specinfo = response.data[0]
+        console.log('getDTUDetailDtuSpecInfo', response)
       })
     },
     onReturnBL() {

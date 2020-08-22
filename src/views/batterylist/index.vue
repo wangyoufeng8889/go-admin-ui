@@ -21,6 +21,16 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
+          <el-form-item label="电池类型" prop="pkg_type">
+            <el-select v-model="queryParams.pkg_type" placeholder="选择电池类型" clearable size="small">
+              <el-option
+                v-for="dict in pkg_typeTable"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh-left" size="mini" @click="resetQuery">刷新</el-button>
@@ -136,7 +146,8 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         dtu_id: undefined,
-        pkg_id: undefined
+        pkg_id: undefined,
+        pkg_type: undefined
         // bms_chargeStatus: undefined,
         // pkg_onOffLineStatus: undefined
       },
@@ -146,9 +157,9 @@ export default {
   },
   created() {
     this.getList()
-    // this.getDicts('sys_charge_status').then(response => {
-    // this.statusOptions = response.data
-    // })
+    this.getDicts('sys_pkg_type').then(response => {
+      this.pkg_typeTable = response.data
+    })
     // this.getDicts('sys_net_status').then(response => {
     // this.statusOnOff = response.data
     // })
@@ -166,7 +177,7 @@ export default {
     },
     // 电池状态字典翻译
     statusFormat(row) {
-      // this.selectDictLabel(this.statusOptions, row.bms_chargeStatus)
+      this.selectDictLabel(this.pkg_typeTable, row.pkg_type)
       // this.selectDictLabel(this.statusOnOff, row.pkg_onOffLineStatus)
       return
     },

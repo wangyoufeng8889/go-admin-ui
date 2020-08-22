@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 // 查询电池列表
-export function getBatteryDetail_dtustatusinfo(query) {
+export function getBatteryDetailBmsStatusInfo(query) {
   return request({
-    url: '/api/bm1/battery/batterydetail/dtu_statusinfo',
+    url: '/api/bm1/battery/batterydetail/bms_statusinfo',
     method: 'get',
     params: query
   })
