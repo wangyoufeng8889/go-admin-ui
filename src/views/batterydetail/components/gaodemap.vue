@@ -59,8 +59,7 @@ export default {
   },
   created() {
     setTimeout(() => {
-      this.center.push(this.dataInit.dtu_longitude)
-      this.center.push(this.dataInit.dtu_latitude)
+      this.center = this.dataInit
       this.ISdata = true
     }, 1000)
   },

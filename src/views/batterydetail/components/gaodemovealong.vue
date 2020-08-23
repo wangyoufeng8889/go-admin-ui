@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import { getDTUDetailDtuStatusInfo } from '@/api/batterymanage/dtudetail'
 // NPM 方式
 import { lazyAMapApiLoaderInstance } from 'vue-amap'
+import { getBatteryMoveInfo } from '@/api/batterymanage/batterydetail'
 // import carUrl from 'https://webapi.amap.com/images/car.png'
 export default {
   name: 'TrackShow',
@@ -50,11 +50,11 @@ export default {
   },
   created() {
     setTimeout(() => {
-      this.mapcenter.center.push(this.dataInit.dtu_longitude)
-      this.mapcenter.center.push(this.dataInit.dtu_latitude)
-      this.queryParams.pkg_id = this.dataInit.pkg_id
-      console.log('dataInit', this.dataInit)
-      console.log('queryParams', this.queryParams)
+      // this.mapcenter = this.dataInit
+      this.queryParams.pkg_id = this.dataInit
+      // console.log('gaodedataInit', this.dataInit)
+      this.mapcenter.center = [115.987803, 34.276918]
+      // console.log('this.queryParams', this.queryParams)
       this.initMap()
       // console.log('thisDate:', this.startTime)
       this.ISdata = true
@@ -64,8 +64,8 @@ export default {
   methods: {
     getTrackData() {
       this.loading = true
-      // console.log(this.queryParams,'this.queryParams')
-      getDTUDetailDtuStatusInfo(this.queryParams).then(response => {
+      console.log(this.queryParams, 'this.queryParams')
+      getBatteryMoveInfo(this.queryParams).then(response => {
         console.log('response=', response)
         this.trackdata = response.data
         const listData = []
@@ -73,17 +73,17 @@ export default {
           const add = []
           add.push(this.trackdata[i].dtu_longitude)
           add.push(this.trackdata[i].dtu_latitude)
-          // this.gpsData[i][0] = this.trackdata[i].dtu_longitude
-          // this.gpsData[i][1] = this.trackdata[i].dtu_latitude
           listData.push(add)
         }
         this.gpsData = listData
         this.loading = false
-        // console.log("gpsData=",this.gpsData)
+        console.log('gpsData=', this.gpsData)
         const add = []
         add.push(this.trackdata[0].dtu_longitude)
         add.push(this.trackdata[0].dtu_latitude)
-        this.mapcenter.center.push(add)
+        console.log('addcenter', add)
+        // this.mapcenter.center.push(add)
+        this.mapcenter.center = add
         console.log('mapcenter=', this.mapcenter)
         this.initPage()
       })
@@ -93,72 +93,8 @@ export default {
         this.queryParams.startTime = this.startTime[0]
         this.queryParams.endTime = this.startTime[1]
       }
-      // console.log('thisDate:', this.startTime)
-      // this.initPage()
       this.getTrackData()
     },
-    // getGPSData() {
-    //   this.$http.get('api/contrail/trackLocations', { params: { date: this.startTime }}).then(result => {
-    //     const code = result.data.code
-    //     const gpsData = result.data.data
-    //     this.loadState = false
-    //     if (code !== 200 || gpsData === '' || gpsData === null) {
-    //       this.initMap()
-    //       return
-    //     }
-    //     var strArr = gpsData.split(';')
-    //     var length = strArr.length - 1
-    //     var resultStr = ''
-    //     for (var i = 0; i < length; i++) {
-    //       var gpsArr = strArr[i].split(',')
-    //       if (gpsArr[11] !== '1') {
-    //         continue // 去除非 GPS 数据
-    //       }
-    //       var jd = gpsArr[3]
-    //       var wd = gpsArr[5]
-    //       resultStr += '[' + wd + ',' + jd + '],'
-    //     }
-    //     if (resultStr === '') {
-    //       this.msg()
-    //       this.initMap()
-    //       return
-    //     }
-    //     resultStr = '[' + resultStr + ']'
-    //     this.initPage(resultStr)
-    //   })
-    // },
-    // getDurationGPSData() {
-    //   this.params.startTime= this.startTime[0];
-    //   this.params.endTime= this.startTime[1];
-    //   this.$http.get('api/contrail/durationLocations', { params: {startTime: this.startTime[0], endTime: this.startTime[1] }}).then(result => {
-    //     const code = result.data.code
-    //     const gpsData = result.data.data
-    //     if (code !== 200 || gpsData === '' || gpsData === null) {
-    //       this.msg()
-    //       this.initMap()
-    //       return
-    //     }
-    //     var strArr = gpsData.split(';')
-    //     var length = strArr.length - 1
-    //     var resultStr = ''
-    //     for (var i = 0; i < length; i++) {
-    //       var gpsArr = strArr[i].split(',')
-    //       if (gpsArr[11] !== '1') {
-    //         continue // 去除非 GPS 数据
-    //       }
-    //       var jd = gpsArr[3]
-    //       var wd = gpsArr[5]
-    //       resultStr += '[' + wd + ',' + jd + '],'
-    //     }
-    //     if (resultStr === '') {
-    //       this.msg()
-    //       this.initMap()
-    //       return
-    //     }
-    //     resultStr = '[' + resultStr + ']'
-    //     this.initPage(resultStr)
-    //   })
-    // },
     initMap() {
       lazyAMapApiLoaderInstance.load().then(() => {
         this.map = new AMap.Map('amap-show', this.mapcenter)
@@ -208,8 +144,9 @@ export default {
             // 这里构建两条简单的轨迹，仅作示例
             // var gpsData = eval(data);
             // const gpsData = [[119.987803, 30.276918], [119.887803, 30.176918], [119.787803, 30.076918], [119.687803, 29.276918], [118.987803, 29.176918], [118.587803, 28.276918]]
-            // console.log(this.gpsData,'this.gpsDatathis.gpsData')
+
             const gpsData = this.gpsData
+            console.log(gpsData, 'this.gpsDatathis.gpsData')
             pathSimplifierIns.setData([{
               name: '轨迹0',
               path: gpsData
