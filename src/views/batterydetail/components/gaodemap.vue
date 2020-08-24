@@ -60,6 +60,7 @@ export default {
   created() {
     setTimeout(() => {
       this.center = this.dataInit
+      console.log('this.center', this.center)
       this.ISdata = true
     }, 1000)
   },
