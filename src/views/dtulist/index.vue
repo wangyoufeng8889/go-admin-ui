@@ -3,19 +3,19 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="70px">
-          <el-form-item label="电池编号" prop="pkg_id">
+          <el-form-item label="DTU编号" prop="pkg_id">
             <el-input
-              v-model="queryParams.pkg_id"
-              placeholder="请输入电池编号"
+              v-model="queryParams.dtu_id"
+              placeholder="请输入DTU编号"
               clearable
               size="small"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="电池类型" prop="pkg_type">
-            <el-select v-model="queryParams.pkg_type" placeholder="选择电池类型" clearable size="small">
+          <el-form-item label="DTU类型" prop="pkg_type">
+            <el-select v-model="queryParams.dtu_type" placeholder="选择DTU类型" clearable size="small">
               <el-option
-                v-for="dict in pkg_typeTable"
+                v-for="dict in dtu_typeTable"
                 :key="dict.dictValue"
                 :label="dict.dictLabel"
                 :value="dict.dictValue"
@@ -34,27 +34,29 @@
             >删除</el-button>
           </el-form-item>
         </el-form>
-        <el-table v-loading="loading" :data="batteryList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="dtuList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="30" align="lift" />
           <el-table-column label="DTU编号" align="center" prop="dtu_id" width="160" />
           <el-table-column label="电池编号" align="center" prop="pkg_id" width="160" />
-          <el-table-column label="dtu_csq" align="center" prop="dtu_csq" width="50">
-            <div v-if="scope.row.dtu_csq > '25'">
-              <el-tag type="success">{{ scope.row.dtu_csq }}</el-tag>
-            </div>
-            <div v-else-if="scope.row.dtu_csq < '25' && scope.row.dtu_csq > '15'">
-              <el-tag type="warning">{{ scope.row.dtu_csq }}</el-tag>
-            </div>
-            <div v-else>
-              <el-tag type="danger">{{ scope.row.dtu_csq }}</el-tag>
-            </div>
+          <el-table-column label="信号强度" align="center" prop="dtu_csq" width="50">
+            <template slot-scope="scope">
+              <div v-if="scope.row.dtu_csq > '25'">
+                <el-tag type="success">{{ scope.row.dtu_csq }}</el-tag>
+              </div>
+              <div v-else-if="scope.row.dtu_csq < '25' && scope.row.dtu_csq > '15'">
+                <el-tag type="warning">{{ scope.row.dtu_csq }}</el-tag>
+              </div>
+              <div v-else>
+                <el-tag type="danger">{{ scope.row.dtu_csq }}</el-tag>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column label="安装位置" align="center" prop="dtu_setupType" width="50">
             <template slot-scope="scope">
               <div v-if="scope.row.dtu_setupType == '1'">
-                电动车
+                车
               </div>
-              <div v-if="scope.row.dtu_setupType == '1'">
+              <div v-if="scope.row.dtu_setupType == '0'">
                 电池
               </div>
             </template>
@@ -64,7 +66,7 @@
               <div v-if="scope.row.dtu_errNbr == '0'">
                 <el-tag type="success">{{ scope.row.dtu_errNbr }}个</el-tag>
               </div>
-              <div v-if="scope.row.dtu_aliyunStatus == '0'">
+              <div v-if="scope.row.dtu_errNbr > '0'">
                 <el-tag type="danger">{{ scope.row.dtu_errNbr }}个</el-tag>
               </div>
             </template>
@@ -88,7 +90,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="网络" align="center" prop="dtu_aliyunStatus" width="50">
+          <el-table-column label="网络" align="center" prop="dtu_aliyunStatus" width="60">
             <template slot-scope="scope">
               <div v-if="scope.row.dtu_aliyunStatus == '1'">
                 <el-tag type="success">在线</el-tag>
@@ -152,14 +154,14 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
-      // 岗位表格数据
-      batteryList: [],
+      // dtu表格数据
+      dtuList: [],
       // 弹出层标题
       title: 'hello',
       // 是否显示弹出层
       open: false,
-      // 电池类型词典
-      pkg_typeTable: [],
+      // DTU类型词典
+      dtu_typeTable: [],
       // 状态数据字典
       // statusOptions: [],
       // 在线状态
@@ -182,9 +184,9 @@ export default {
   },
   created() {
     this.getList()
-    this.getDicts('sys_pkg_type').then(response => {
-      this.pkg_typeTable = response.data
-      console.log('pkg_typeTable', response)
+    this.getDicts('sys_dtu_type').then(response => {
+      this.dtu_typeTable = response.data
+      console.log('dtu_typeTable', response)
     })
     // this.getDicts('sys_net_status').then(response => {
     // this.statusOnOff = response.data
@@ -196,14 +198,14 @@ export default {
     getList() {
       this.loading = true
       getDTUList(this.queryParams).then(response => {
-        this.batteryList = response.data.list
+        this.dtuList = response.data.list
         this.total = response.data.count
         this.loading = false
       })
     },
     // 电池状态字典翻译
     statusFormat(row) {
-      this.selectDictLabel(this.pkg_typeTable, row.pkg_type)
+      // this.selectDictLabel(this.dtu_typeTable, row.pkg_type)
       // this.selectDictLabel(this.statusOnOff, row.pkg_onOffLineStatus)
       return
     },
@@ -215,9 +217,13 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        bms_specinfoId: undefined,
-        pkg_id: undefined,
         dtu_id: undefined,
+        pkg_id: undefined,
+        dtu_type: undefined,
+        dtu_setupType: undefined,
+        dtu_aliyunStatus: undefined,
+        dtu_csq: undefined,
+        dtu_errNbr: undefined,
         remark: undefined
       }
       this.resetForm('form')
@@ -241,17 +247,17 @@ export default {
     /* 查看电池详情 */
     handleViewDetail(row) {
       console.log('handleViewDetail', row)
-      this.$router.push({ name: 'batterydetail', params: { id: row.pkg_id }})
+      this.$router.push({ name: 'dtudetail', params: { id: row.dtu_id }})
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const battery_listIds = row.bms_specInfoId || this.ids
-      this.$confirm('是否确认删除电池编号为"' + battery_listIds + '"的数据项?', '警告', {
+      const dtu_listIds = row.dtu_specInfoId || this.ids
+      this.$confirm('是否确认删除电池编号为"' + dtu_listIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delOneDTUList(battery_listIds)
+        return delOneDTUList(dtu_listIds)
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
