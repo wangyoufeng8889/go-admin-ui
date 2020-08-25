@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+import { getBatteryLocationInfo } from '@/api/batterymanage/batterylocaltion'
 export default {
   props: ['dataInit'],
   data() {
@@ -22,6 +23,7 @@ export default {
         content: '',
         offset: [10, 12]
       },
+      pkg_id: '',
       center: [],
       lng: 119.987803,
       lat: 30.276918,
@@ -54,17 +56,40 @@ export default {
             })
           }
         }
-      }]
+      }],
+      // 查询参数
+      queryParams: {
+        dtu_id: undefined,
+        pkg_id: undefined
+      },
+      trackdata: []
     }
   },
   created() {
     setTimeout(() => {
-      this.center = this.dataInit
-      console.log('this.center', this.center)
-      this.ISdata = true
+      // this.center = this.dataInit
+      this.pkg_id = this.dataInit
+      console.log('map this.pkg_id', this.pkg_id)
+      // 去后端提取定位
+      this.getLocation()
     }, 1000)
   },
   methods: {
+    getLocation() {
+      this.queryParams.pkg_id = this.pkg_id
+      getBatteryLocationInfo(this.queryParams).then(response => {
+        console.log('response=', response)
+        this.trackdata = response.data
+        const add = []
+        add.push(this.trackdata[0].dtu_longitude)
+        add.push(this.trackdata[0].dtu_latitude)
+        console.log('addcenter', add)
+        // this.mapcenter.center.push(add)
+        this.center = add
+        console.log('mapcenter=', this.center)
+        this.ISdata = true
+      })
+    },
     req_post() {
 
     }

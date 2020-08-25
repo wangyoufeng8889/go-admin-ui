@@ -151,7 +151,7 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <gdmap :data-init="mapcenter" />
+                  <gdmap :data-init="pkgid" />
                 </div>
               </el-col>
             </el-row>
@@ -458,6 +458,7 @@
                       </div>
                     </el-col>
                   </el-row>
+                  <el-divider />
                   <el-row :gutter="24">
                     <el-col :span="4">
                       <div class="batterydetail">
@@ -613,22 +614,22 @@
                         <el-form ref="ruleForm" :model="ruleForm" label-width="110px" class="demo-ruleForm">
                           <div>
                             <el-form-item label="整组过压保护:">
-                              {{ batteryDetailInfo.bms_pkgOverVoltageProtect/100 }}mV
+                              {{ batteryDetailInfo.bms_pkgOverVoltageProtect/100 }}V
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="整组过压释放:">
-                              {{ batteryDetailInfo.bms_pkgOverVoltageRelease/100 }}mV
+                              {{ batteryDetailInfo.bms_pkgOverVoltageRelease/100 }}V
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="整组欠压保护:">
-                              {{ batteryDetailInfo.bms_pkgUnderVoltageProtect/100 }}mV
+                              {{ batteryDetailInfo.bms_pkgUnderVoltageProtect/100 }}V
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="整组欠压释放:">
-                              {{ batteryDetailInfo.bms_pkgUnderVoltageRelease/100 }}mV
+                              {{ batteryDetailInfo.bms_pkgUnderVoltageRelease/100 }}V
                             </el-form-item>
                           </div>
                           <div>
@@ -649,22 +650,22 @@
                         <el-form ref="ruleForm" :model="ruleForm" label-width="110px" class="demo-ruleForm">
                           <div>
                             <el-form-item label="单体过压保护:">
-                              {{ batteryDetailInfo.bms_cellOverVoltageProtect/100 }}mV
+                              {{ batteryDetailInfo.bms_cellOverVoltageProtect }}mV
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="单体过压释放:">
-                              {{ batteryDetailInfo.bms_cellOverVoltageRelease/100 }}mV
+                              {{ batteryDetailInfo.bms_cellOverVoltageRelease }}mV
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="单体欠压保护:">
-                              {{ batteryDetailInfo.bms_cellUnderVoltageProtect/100 }}mV
+                              {{ batteryDetailInfo.bms_cellUnderVoltageProtect }}mV
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="单体欠压释放:">
-                              {{ batteryDetailInfo.bms_cellUnderVoltageRelease/100 }}mV
+                              {{ batteryDetailInfo.bms_cellUnderVoltageRelease }}mV
                             </el-form-item>
                           </div>
                           <div>
@@ -717,6 +718,7 @@
                       </div>
                     </el-col>
                   </el-row>
+                  <el-divider />
                   <el-row :gutter="24">
                     <el-col :span="4">
                       <div class="batterydetail">
@@ -755,17 +757,6 @@
                       <div class="batterydetail">
                         <el-form ref="ruleForm" :model="ruleForm" label-width="110px" class="demo-ruleForm">
                           <div>
-                            <el-form-item label="电池功能配置:">
-                              {{ batteryDetailInfo.bms_funcConfig }}
-                            </el-form-item>
-                          </div>
-                        </el-form>
-                      </div>
-                    </el-col>
-                    <el-col :span="4">
-                      <div class="batterydetail">
-                        <el-form ref="ruleForm" :model="ruleForm" label-width="110px" class="demo-ruleForm">
-                          <div>
                             <el-form-item label="硬件单体过压:">
                               {{ batteryDetailInfo.bms_hardCellOverVoltage }}mV
                             </el-form-item>
@@ -786,7 +777,28 @@
                     </el-col>
                   </el-row>
                   <el-row :gutter="24">
-
+                    <el-col :span="4">
+                      <div class="batterydetail">
+                        <el-form ref="ruleForm" :model="ruleForm" label-width="110px" class="demo-ruleForm">
+                          <div>
+                            <el-form-item label="电池功能配置:">
+                              {{ batteryDetailInfo.bms_funcConfig }}
+                            </el-form-item>
+                          </div>
+                        </el-form>
+                      </div>
+                    </el-col>
+                    <el-col :span="4">
+                      <div class="batterydetail">
+                        <el-form ref="ruleForm" :model="ruleForm" label-width="110px" class="demo-ruleForm">
+                          <div>
+                            <el-form-item label="放电系数:">
+                              {{ batteryDetailInfo.bms_funcConfig }}
+                            </el-form-item>
+                          </div>
+                        </el-form>
+                      </div>
+                    </el-col>
                     <el-col :span="6">
                       <div class="batterydetail">
                         <el-form ref="ruleForm" :model="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -828,7 +840,6 @@
           </el-main>
         </el-container>
       </el-card>
-
     </template>
   </BasicLayout>
 </template>
@@ -859,7 +870,6 @@ export default {
         resource: '',
         desc: ''
       },
-      mapcenter: [],
       pkgid: '',
       // 查询参数
       queryParams: {
@@ -871,15 +881,15 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.queryParams.pkg_id = this.$route.params.id
-    console.log('pkg_id=', this.queryParams.pkg_id)
-    if (typeof (this.queryParams.pkg_id) === 'undefined') {
+    this.pkgid = this.$route.params.id
+    console.log('pkg_id=', this.pkgid)
+    if (typeof (this.pkgid) === 'undefined') {
       // 获取session存储编号
-      this.queryParams.pkg_id = sessionStorage.getItem('pkg_id')
-      console.log('quchu pkid=', this.queryParams.pkg_id)
+      this.pkgid = sessionStorage.getItem('pkg_id')
+      console.log('quchu pkid=', this.pkgid)
     } else {
-      sessionStorage.setItem('pkg_id', this.queryParams.pkg_id)
-      console.log('cunchu pkid=', this.queryParams.pkg_id)
+      sessionStorage.setItem('pkg_id', this.pkgid)
+      console.log('cunchu pkid=', this.pkgid)
     }
     this.getdevinfo()
   },
@@ -893,12 +903,11 @@ export default {
       this.loading = true
 
       // const bms_specInfoId1 = this.queryParams.bms_specInfoId
+      this.queryParams.pkg_id = this.pkgid
       getBatteryDetailInfo(this.queryParams).then(response => {
         this.batteryDetailInfo = response.data[0]
-        this.mapcenter.push(this.batteryDetailInfo.dtu_longitude)
-        this.mapcenter.push(this.batteryDetailInfo.dtu_latitude)
         this.loading = false
-        this.pkgid = this.batteryDetailInfo.pkg_id
+        // this.pkgid = this.batteryDetailInfo.pkg_id
         console.log('getBatteryDetailInfo', response)
       })
     },

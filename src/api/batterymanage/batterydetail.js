@@ -9,11 +9,3 @@ export function getBatteryDetailInfo(query) {
     params: query
   })
 }
-
-export function getBatteryMoveInfo(query) {
-  return request({
-    url: '/api/bm1/battery/batterymove',
-    method: 'get',
-    params: query
-  })
-}

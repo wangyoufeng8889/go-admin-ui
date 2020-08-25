@@ -3,12 +3,13 @@
     <div class="input searchInfo">
       <span><span>时间：</span>
         <el-date-picker
-          v-model="startTime"
+          v-model="buckTime"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           value-format="yyyy-MM-dd HH:mm:SS"
+          :default-time="['12:00:00', '08:00:00']"
         />
       </span>
       <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findTrackData">搜索</el-button>
@@ -22,7 +23,7 @@
 <script>
 // NPM 方式
 import { lazyAMapApiLoaderInstance } from 'vue-amap'
-import { getBatteryMoveInfo } from '@/api/batterymanage/batterydetail'
+import { getBatteryMoveInfo } from '@/api/batterymanage/batterylocaltion'
 // import carUrl from 'https://webapi.amap.com/images/car.png'
 export default {
   name: 'TrackShow',
@@ -31,7 +32,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
-      startTime: [],
+      buckTime: [],
       carUrl: 'https://webapi.amap.com/images/car.png',
       mapcenter: {
         center: [],
@@ -56,7 +57,7 @@ export default {
       this.mapcenter.center = [115.987803, 34.276918]
       // console.log('this.queryParams', this.queryParams)
       this.initMap()
-      // console.log('thisDate:', this.startTime)
+      // console.log('thisDate:', this.buckTime)
       this.ISdata = true
       this.getTrackData()
     }, 1000)
@@ -89,9 +90,9 @@ export default {
       })
     },
     findTrackData() {
-      if (this.startTime.length !== 0) {
-        this.queryParams.startTime = this.startTime[0]
-        this.queryParams.endTime = this.startTime[1]
+      if (this.buckTime.length !== 0) {
+        this.queryParams.startTime = this.buckTime[0]
+        this.queryParams.endTime = this.buckTime[1]
       }
       this.getTrackData()
     },
