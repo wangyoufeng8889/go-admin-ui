@@ -9,9 +9,9 @@ export function getDTUList(query) {
 }
 
 // 删除电池
-export function delOneDTUList(dtuPkg_listId) {
+export function delOneDTUList(dtu_specInfoId) {
   return request({
-    url: '/api/bm1/battery/dtulist/' + dtuPkg_listId,
+    url: '/api/bm1/battery/dtulist/' + dtu_specInfoId,
     method: 'delete'
   })
 }
