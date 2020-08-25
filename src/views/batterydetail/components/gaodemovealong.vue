@@ -4,12 +4,12 @@
       <span><span>时间：</span>
         <el-date-picker
           v-model="buckTime"
-          type="daterange"
+          type="datetimerange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           value-format="yyyy-MM-dd HH:mm:SS"
-          :default-time="['12:00:00', '08:00:00']"
+          :default-time="['08:00:00', '20:00:00']"
         />
       </span>
       <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findTrackData">搜索</el-button>
@@ -56,11 +56,11 @@ export default {
       // console.log('gaodedataInit', this.dataInit)
       this.mapcenter.center = [115.987803, 34.276918]
       // console.log('this.queryParams', this.queryParams)
-      this.initMap()
+      // this.initMap()
       // console.log('thisDate:', this.buckTime)
       this.ISdata = true
       this.getTrackData()
-    }, 1000)
+    }, 3000)
   },
   methods: {
     getTrackData() {
