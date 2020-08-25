@@ -51,13 +51,7 @@ export default {
   },
   created() {
     setTimeout(() => {
-      // this.mapcenter = this.dataInit
-      this.queryParams.pkg_id = this.dataInit
-      // console.log('gaodedataInit', this.dataInit)
-      this.mapcenter.center = [115.987803, 34.276918]
-      // console.log('this.queryParams', this.queryParams)
-      // this.initMap()
-      // console.log('thisDate:', this.buckTime)
+      this.queryParams = this.dataInit
       this.ISdata = true
       this.getTrackData()
     }, 3000)

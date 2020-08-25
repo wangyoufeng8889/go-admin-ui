@@ -151,7 +151,7 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <gdmap :data-init="pkgid" />
+                  <gdmap :data-init="moveTrack" />
                 </div>
               </el-col>
             </el-row>
@@ -834,7 +834,7 @@
                     </el-col>
                   </el-row>
                 </el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="pkgid" /></el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -871,6 +871,10 @@ export default {
         desc: ''
       },
       pkgid: '',
+      moveTrack: {
+        pkg_id: '',
+        dtu_id: ''
+      },
       // 查询参数
       queryParams: {
         bms_specInfoId: undefined,
@@ -891,6 +895,7 @@ export default {
       sessionStorage.setItem('pkg_id', this.pkgid)
       console.log('cunchu pkid=', this.pkgid)
     }
+    this.moveTrack.pkg_id = this.pkgid
     this.getdevinfo()
   },
   mounted() {},

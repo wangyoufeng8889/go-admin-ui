@@ -68,15 +68,14 @@ export default {
   created() {
     setTimeout(() => {
       // this.center = this.dataInit
-      this.pkg_id = this.dataInit
-      console.log('map this.pkg_id', this.pkg_id)
+      this.queryParams = this.dataInit
+      console.log('map this.pkg_id', this.queryParams)
       // 去后端提取定位
       this.getLocation()
     }, 1000)
   },
   methods: {
     getLocation() {
-      this.queryParams.pkg_id = this.pkg_id
       getBatteryLocationInfo(this.queryParams).then(response => {
         console.log('response=', response)
         this.trackdata = response.data

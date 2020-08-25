@@ -30,17 +30,17 @@
                       {{ dtuDetailInfo.dtu_errCode }}
                     </el-form-item>
                   </div>
-                  <div>
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
                     <el-form-item label="电池编号:">
                       {{ dtuDetailInfo.pkg_id }}
                     </el-form-item>
                   </div>
-                  <div>
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
                     <el-form-item label="电池故障:">
                       {{ dtuDetailInfo.bms_errNbr }}个
                     </el-form-item>
                   </div>
-                  <div>
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
                     <el-form-item label="故障码:">
                       {{ dtuDetailInfo.bms_errCode }}
                     </el-form-item>
@@ -90,18 +90,18 @@
                       {{ dtuDetailInfo.dtu_gpsSateCnt }}
                     </el-form-item>
                   </div>
-                  <div>
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
                     <el-form-item label="电量:">
                       {{ dtuDetailInfo.bms_soc }}%
                     </el-form-item>
                   </div>
-                  <div>
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
                     <el-form-item label="当前电压:">
                       {{ parseFloat(dtuDetailInfo.bms_voltage)/10 }}V
 
                     </el-form-item>
                   </div>
-                  <div>
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
                     <el-form-item label="充放电状态:">
                       <div v-if="dtuDetailInfo.bms_chargeStatus == '0'">
                         <el-tag type="warning">搁置</el-tag>
@@ -118,7 +118,7 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <gdmap :data-init="dtuid" />
+                  <gdmap :data-init="moveTrack" />
                 </div>
               </el-col>
             </el-row>
@@ -227,7 +227,7 @@
                 </el-tab-pane>
                 <el-tab-pane label="单体电压" name="second"> 对对对</el-tab-pane>
                 <el-tab-pane label="配置参数" name="third"> ddd</el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="dtuid" /></el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -264,6 +264,10 @@ export default {
         desc: ''
       },
       dtuid: '',
+      moveTrack: {
+        pkg_id: '',
+        dtu_id: ''
+      },
       // 查询参数
       queryParams: {
         tdtu_specInfoId: undefined,
@@ -284,6 +288,7 @@ export default {
       sessionStorage.setItem('dtu_id', this.dtuid)
       console.log('cunchu pkid=', this.dtuid)
     }
+    this.moveTrack.dtu_id = this.dtuid
     this.getdevinfo()
   },
   mounted() {},
