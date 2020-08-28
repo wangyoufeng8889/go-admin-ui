@@ -1,106 +1,111 @@
 <template>
-  <div class="amap-page-container">
-    <div v-if="ISdata" :style="{width:'100%',height:'300px'}">
-      <el-amap vid="amap" :plugin="plugin" class="amap-demo" :center="center" :zoom="zoom">
-        <el-amap-marker
-          vid="marker"
-          :position="center"
-          :label="label"
-        />
+  <div class="Aimap">
+    <div class="amap-page-container">
+      <el-amap
+        vid="amapAi"
+        :center="center"
+        :zoom="zoom"
+        class="amap-ai"
+        :events="events"
+      >
+        <el-amap-marker v-for="(marker,index) in markers" :key="index" :position="marker.position" :content="marker.content" :events="marker.events" />
       </el-amap>
     </div>
   </div>
+
 </template>
+
 <script>
-export default {
+module.exports = {
   props: ['dataInit'],
-  data() {
+
+  data: function() {
+    const self = this
     return {
-      ISdata: false,
-      localmarkers: [{}],
-      localInfo: [],
-      label: {
-        content: '',
-        offset: [10, 12]
-      },
-      pkg_id: '',
-      center: [],
-      marker2: [],
-      zoom: 16,
-      // 查询参数
-      queryParams: {
-        dtu_id: undefined,
-        pkg_id: undefined
-      },
-      trackdata: []
+      zoom: 4,
+      center: [119.992338, 30.273624],
+      markers: [],
+      markerRefs: [],
+      events: {
+        init(o) {
+          setTimeout(() => {
+            console.log(self.markerRefs)
+            const cluster = new AMap.MarkerClusterer(o, self.markerRefs, {
+              gridSize: 80,
+              renderCluserMarker: self._renderCluserMarker
+            })
+            console.log(cluster)
+          }, 1000)
+        }
+      }
     }
   },
+
   created() {
-    setTimeout(() => {
-      // this.center = this.dataInit
-      this.localInfo = this.dataInit
-      console.log('localInfo', this.localInfo)
-      this.showLocation()
-      // 去后端提取定位
-    }, 1000)
+    const self = this
+    const markers = []
+    const index = 0// eslint-disable-line no-unused-vars
+
+    // while (index <= this.dataInit.length) {
+    this.dataInit.map(i => {
+      markers.push({
+        position: [parseFloat(i.dtu_longitude), parseFloat(i.dtu_latitude)],
+        content: '<div style="text-align:center; background-color: hsla(180, 100%, 50%, 0.7); height: 10px; width: 10px; border: 1px solid hsl(180, 100%, 40%); border-radius: 12px; box-shadow: hsl(180, 100%, 50%) 0px 0px 1px;"></div>',
+        events: {
+          init(o) {
+            self.markerRefs.push(o)
+          }
+        }
+      })
+      // index++??
+    })
+
+    this.markers = markers
   },
+
   methods: {
-    showLocation() {
-      const marker = []
-      var position = []
-      var vid = ''
-      position.push(this.localInfo[0].dtu_longitude)
-      position.push(this.localInfo[0].dtu_latitude)
-      this.center = position
-      vid = this.localInfo[0].dtu_id
+    _renderCluserMarker(context) {
+      const count = this.markers.length
 
-      marker.push(position)
-      marker.push(vid)
-      this.localmarkers.push(marker)
-      console.log('this.localmarkers', this.localmarkers)
-      // this.mapcenter.center.push(add)
-
-      this.ISdata = true
+      const factor = Math.pow(context.count / count, 1 / 18)
+      const div = document.createElement('div')
+      const Hue = 180 - factor * 180
+      const bgColor = 'hsla(' + Hue + ',100%,50%,0.7)'
+      const fontColor = 'hsla(' + Hue + ',100%,20%,1)'
+      const borderColor = 'hsla(' + Hue + ',100%,40%,1)'
+      const shadowColor = 'hsla(' + Hue + ',100%,50%,1)'
+      div.style.backgroundColor = bgColor
+      const size = Math.round(30 + Math.pow(context.count / count, 1 / 5) * 20)
+      div.style.width = div.style.height = size + 'px'
+      div.style.border = 'solid 1px ' + borderColor
+      div.style.borderRadius = size / 2 + 'px'
+      div.style.boxShadow = '0 0 1px ' + shadowColor
+      div.innerHTML = context.count
+      div.style.lineHeight = size + 'px'
+      div.style.color = fontColor
+      div.style.fontSize = '14px'
+      div.style.textAlign = 'center'
+      context.marker.setOffset(new AMap.Pixel(-size / 2, -size / 2))
+      context.marker.setContent(div)
     }
   }
 }
 </script>
-<style>
-  html, body, #container {
-      height: 100%;
-      width: 100%;
-  }
+<style lang="scss" scoped>
+.Aimap{
+   height: 100%;
+    width: 100%;
+  .amap-ai {
+  height: 100%;
+    width: 100%;
+}
+  /deep/.amap-page-container{
+     height: calc(100vh - 430px);
+    width: 100%;
+}
+  /deep/.el-vue-amap-container{
+    height: calc(100vh - 430px);
+}
+}
 
-  .amap-icon img,
-  .amap-marker-content img{
-      width: 25px;
-      height: 34px;
-  }
-
-  .marker {
-      position: absolute;
-      top: -20px;
-      right: -118px;
-      color: #fff;
-      padding: 4px 10px;
-      box-shadow: 1px 1px 1px rgba(10, 10, 10, .2);
-      white-space: nowrap;
-      font-size: 12px;
-      font-family: "";
-      background-color: #25A5F7;
-      border-radius: 3px;
-  }
-
-  .input-card{
-      width: 18rem;
-      z-index: 170;
-  }
-
-  .input-card .btn{
-      margin-right: .8rem;
-  }
-
-  .input-card .btn:last-child{
-      margin-right: 0;
-  }
 </style>

@@ -39,7 +39,7 @@ VueAMap.initAMapApiLoader({
   // 高德key,john自己的key
   key: '5403d24ee0ce5592dfab9af74c35fb6c',
   // 插件集合 （插件按需引入）
-  plugin: ['Autocomplete', 'PlaceSearch', 'Scale', 'OverView', 'ToolBar', 'MapType', 'PolyEditor', 'CircleEditor'],
+  plugin: ['Autocomplete', 'PlaceSearch', 'Scale', 'OverView', 'ToolBar', 'MapType', 'PolyEditor', 'CircleEditor', 'MarkerClusterer'],
   v: '1.4.4',
   uiVersion: '1.0.11' // 版本号
 })

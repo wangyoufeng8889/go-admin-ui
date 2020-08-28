@@ -65,7 +65,7 @@
         <el-tabs>
           <el-tab-pane label="设备地图" style="height: 100;">
             <el-row>
-              <Aimap :data-init="localInfo" />
+              <Aimap v-if="localInfo.length" :data-init="localInfo" />
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="访问量">
