@@ -35,7 +35,7 @@ module.exports = {
               renderCluserMarker: self._renderCluserMarker
             })
             console.log(cluster)
-          }, 1000)
+          }, 100)
         }
       }
     }
@@ -50,10 +50,14 @@ module.exports = {
     this.dataInit.map(i => {
       markers.push({
         position: [parseFloat(i.dtu_longitude), parseFloat(i.dtu_latitude)],
-        content: '<div style="text-align:center; background-color: hsla(180, 100%, 50%, 0.7); height: 10px; width: 10px; border: 1px solid hsl(180, 100%, 40%); border-radius: 12px; box-shadow: hsl(180, 100%, 50%) 0px 0px 1px;"></div>',
+        content: '<div style="text-align:center; background-color: hsla(240,100%,50%,0.8); height: 10px; width: 10px; border: 1px solid hsl(180, 100%, 40%); border-radius: 12px; box-shadow: hsl(180, 100%, 50%) 0px 0px 1px;"></div>',
         events: {
           init(o) {
             self.markerRefs.push(o)
+          },
+          click: () => {
+            // alert('click marker');
+
           }
         }
       })
@@ -107,5 +111,4 @@ module.exports = {
     height: calc(100vh - 430px);
 }
 }
-
 </style>
