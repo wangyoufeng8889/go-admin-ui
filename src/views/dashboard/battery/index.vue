@@ -10,10 +10,10 @@
             <mini-progress color="rgb(19, 194, 194)" :target="90" :percentage="dashboardInfo.batteryOnlineNbr*100/dashboardInfo.batteryTotalNbr" height="8px" />
           </div>
           <template slot="footer">
-            <trend flag="top" style="margin-right: 16px;" :rate="dashboardInfo.batteryOnlineNbr">
+            <trend flag="top" style="margin-right: 16px;" :rate="String(dashboardInfo.batteryOnlineNbr)">
               <span slot="term">在线数量</span>
             </trend>
-            <trend flag="bottom" :rate="dashboardInfo.batteryOfflineNbr">
+            <trend flag="bottom" :rate="String(dashboardInfo.batteryOfflineNbr)">
               <span slot="term">故障数</span>
             </trend>
           </template>
@@ -39,10 +39,10 @@
             <mini-progress color="rgb(19, 194, 194)" :target="90" :percentage="dashboardInfo.dtuOnlineNbr*100/dashboardInfo.dtuTotalNbr" height="8px" />
           </div>
           <template slot="footer">
-            <trend flag="top" style="margin-right: 16px;" :rate="dashboardInfo.dtuOnlineNbr">
+            <trend flag="top" style="margin-right: 16px;" :rate="String(dashboardInfo.dtuOnlineNbr)">
               <span slot="term">在线数量</span>
             </trend>
-            <trend flag="bottom" :rate="dashboardInfo.dtuOfflineNbr">
+            <trend flag="bottom" :rate="String(dashboardInfo.dtuOfflineNbr)">
               <span slot="term">故障数</span>
             </trend>
           </template>
