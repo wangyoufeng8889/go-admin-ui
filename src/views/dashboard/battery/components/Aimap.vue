@@ -12,18 +12,20 @@
   </div>
 </template>
 <script>
-import { getBatteryLocationInfo } from '@/api/batterymanage/batterylocaltion'
 export default {
   props: ['dataInit'],
   data() {
     return {
       ISdata: false,
+      localmarkers: [{}],
+      localInfo: [],
       label: {
         content: '',
         offset: [10, 12]
       },
       pkg_id: '',
       center: [],
+      marker2: [],
       zoom: 16,
       // 查询参数
       queryParams: {
@@ -36,26 +38,29 @@ export default {
   created() {
     setTimeout(() => {
       // this.center = this.dataInit
-      this.queryParams = this.dataInit
-      console.log('map this.pkg_id', this.queryParams)
+      this.localInfo = this.dataInit
+      console.log('localInfo', this.localInfo)
+      this.showLocation()
       // 去后端提取定位
-      this.getLocation()
     }, 1000)
   },
   methods: {
-    getLocation() {
-      getBatteryLocationInfo(this.queryParams).then(response => {
-        console.log('response=', response)
-        this.trackdata = response.data
-        const add = []
-        add.push(this.trackdata[0].dtu_longitude)
-        add.push(this.trackdata[0].dtu_latitude)
-        console.log('addcenter', add)
-        // this.mapcenter.center.push(add)
-        this.center = add
-        console.log('mapcenter=', this.center)
-        this.ISdata = true
-      })
+    showLocation() {
+      const marker = []
+      var position = []
+      var vid = ''
+      position.push(this.localInfo[0].dtu_longitude)
+      position.push(this.localInfo[0].dtu_latitude)
+      this.center = position
+      vid = this.localInfo[0].dtu_id
+
+      marker.push(position)
+      marker.push(vid)
+      this.localmarkers.push(marker)
+      console.log('this.localmarkers', this.localmarkers)
+      // this.mapcenter.center.push(add)
+
+      this.ISdata = true
     }
   }
 }

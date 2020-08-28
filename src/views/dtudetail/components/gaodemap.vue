@@ -16,7 +16,6 @@ import { getBatteryLocationInfo } from '@/api/batterymanage/batterylocaltion'
 export default {
   props: ['dataInit'],
   data() {
-    const self = this
     return {
       ISdata: false,
       label: {
@@ -25,38 +24,7 @@ export default {
       },
       pkg_id: '',
       center: [],
-      lng: 119.987803,
-      lat: 30.276918,
       zoom: 16,
-      loaded: false,
-      plugin: [{
-        enableHighAccuracy: true, // 是否使用高精度定位，默认:true
-        timeout: 100, // 超过10秒后停止定位，默认：无穷大
-        maximumAge: 0, // 定位结果缓存0毫秒，默认：0
-        convert: true, // 自动偏移坐标，偏移后的坐标为高德坐标，默认：true
-        showButton: false, // 显示定位按钮，默认：true
-        buttonPosition: 'RB', // 定位按钮停靠位置，默认：'LB'，左下角
-        showMarker: true, // 定位成功后在定位到的位置显示点标记，默认：true
-        showCircle: true, // 定位成功后用圆圈表示定位精度范围，默认：true
-        panToLocation: true, // 定位成功后将定位到的位置作为地图中心点，默认：true
-        zoomToAccuracy: true, // 定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：f
-        extensions: 'all',
-        pName: 'Geolocation',
-        events: {
-          init(o) {
-            // o 是高德地图定位插件实例
-            o.getCurrentPosition((status, result) => {
-              if (result && result.position) {
-                self.lng = 110.987803
-                self.lat = 30.276918
-                self.center = [self.lng, self.lat]
-                self.loaded = true
-                self.$nextTick()
-              }
-            })
-          }
-        }
-      }],
       // 查询参数
       queryParams: {
         dtu_id: undefined,
@@ -88,9 +56,6 @@ export default {
         console.log('mapcenter=', this.center)
         this.ISdata = true
       })
-    },
-    req_post() {
-
     }
   }
 }

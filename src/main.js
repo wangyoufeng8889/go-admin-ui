@@ -33,15 +33,18 @@ import BasicLayout from '@/layout/BasicLayout'
 
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
-import AMap from 'vue-amap'
+import VueAMap from 'vue-amap'
 // 初始化vue-amap
-AMap.initAMapApiLoader({
-  // 高德key
-  key: '你的key',
+VueAMap.initAMapApiLoader({
+  // 高德key,john自己的key
+  key: '5403d24ee0ce5592dfab9af74c35fb6c',
   // 插件集合 （插件按需引入）
-  plugin: ['AMap.Geolocation']
+  plugin: ['Autocomplete', 'PlaceSearch', 'Scale', 'OverView', 'ToolBar', 'MapType', 'PolyEditor', 'CircleEditor'],
+  v: '1.4.4',
+  uiVersion: '1.0.11' // 版本号
 })
-Vue.use(AMap)
+Vue.use(VueAMap)
+
 import '@/utils/dialog'
 
 // 全局方法挂载
