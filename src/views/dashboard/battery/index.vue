@@ -31,7 +31,7 @@
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="6" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
-        <chart-card title="DTU总数" :total="dashboardInfo.batteryTotalNbr">
+        <chart-card title="DTU总数" :total="dashboardInfo.dtuTotalNbr">
           <el-tooltip slot="action" class="item" effect="dark" content="DTU在线率" placement="top-start">
             <i class="el-icon-warning-outline" />
           </el-tooltip>

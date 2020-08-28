@@ -225,9 +225,63 @@
                   </el-row>
 
                 </el-tab-pane>
-                <el-tab-pane label="单体电压" name="second"> 对对对</el-tab-pane>
-                <el-tab-pane label="配置参数" name="third"> ddd</el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="配置参数" name="second">
+                  <el-row :gutter="24">
+                    <el-col :span="12">
+                      <div class="dtudetail">
+                        <el-form ref="ruleForm" :model="ruleForm" label-width="150px" class="demo-ruleForm">
+                          <div>
+                            <el-form-item label="远程锁车:">
+                              <div v-if="dtuDetailInfo.dtu_remoteLockCar == '1'">
+                                <el-tag type="success">已锁车</el-tag>
+                              </div>
+                              <div v-else>
+                                <el-tag type="danger">未上锁</el-tag>
+                              </div>
+                            </el-form-item>
+                          </div>
+                          <div>
+                            <el-form-item label="电池包信息上报周期:">
+                              {{ dtuDetailInfo.dtu_pkgInfoReportPeriod }}
+                            </el-form-item>
+                          </div>
+                          <div>
+                            <el-form-item label="OTA IP地址:">
+                              {{ dtuDetailInfo.dtu_otaIP }}
+                            </el-form-item>
+                          </div>
+                        </el-form>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="dtudetail">
+                        <el-form ref="ruleForm" :model="ruleForm" label-width="200px" class="demo-ruleForm">
+                          <div>
+                            <el-form-item label="语音提示开关:">
+                              <div v-if="dtuDetailInfo.dtu_voiceTipsOnOff == '1'">
+                                <el-tag type="success">开</el-tag>
+                              </div>
+                              <div v-else>
+                                <el-tag type="danger">关</el-tag>
+                              </div>
+                            </el-form-item>
+                          </div>
+                          <div>
+                            <el-form-item label="语音提示电量阈值:">
+                              {{ dtuDetailInfo.dtu_voiceTipsThresholdValue }}%
+                            </el-form-item>
+                          </div>
+                          <div>
+                            <el-form-item label="语音提示电量下降增量值:">
+                              {{ dtuDetailInfo.dtu_voiceTipsDownBulk }}%
+                            </el-form-item>
+                          </div>
+                        </el-form>
+                      </div>
+                    </el-col>
+                  </el-row>
+                </el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="third"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
