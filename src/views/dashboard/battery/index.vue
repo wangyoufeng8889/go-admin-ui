@@ -11,10 +11,10 @@
           </div>
           <template slot="footer">
             <trend flag="top" style="margin-right: 16px;" :rate="String(dashboardInfo.batteryOnlineNbr)">
-              <span slot="term">在线数量</span>
+              <span slot="term">在线：</span>
             </trend>
             <trend flag="bottom" :rate="String(dashboardInfo.batteryOfflineNbr)">
-              <span slot="term">故障数</span>
+              <span slot="term">离线：</span>
             </trend>
           </template>
         </chart-card>
@@ -40,10 +40,10 @@
           </div>
           <template slot="footer">
             <trend flag="top" style="margin-right: 16px;" :rate="String(dashboardInfo.dtuOnlineNbr)">
-              <span slot="term">在线数量</span>
+              <span slot="term">在线：</span>
             </trend>
             <trend flag="bottom" :rate="String(dashboardInfo.dtuOfflineNbr)">
-              <span slot="term">故障数</span>
+              <span slot="term">离线：</span>
             </trend>
           </template>
         </chart-card>
