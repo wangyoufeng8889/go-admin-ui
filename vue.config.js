@@ -27,7 +27,8 @@ module.exports = {
      * Detail: https://cli.vuejs.org/config/#publicpath
      */
     publicPath: '/',
-    outputDir: '../service/view/admin',
+    outputDir: '../batterysystemdocker/vueadmin/dist',
+    //outputDir: '../service/view/admin',
     // assetsDir: '../../static/admin',
     // assetsDir: '/',
     lintOnSave: false, // process.env.NODE_ENV === 'development',
