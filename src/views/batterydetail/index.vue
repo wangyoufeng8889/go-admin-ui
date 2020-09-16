@@ -150,7 +150,7 @@
                 </el-form>
               </el-col>
               <el-col :span="12">
-                <div>
+                <div style="width:100%;height:300px;overflow:hidden">
                   <gdmap :data-init="moveTrack" />
                 </div>
               </el-col>
@@ -834,8 +834,8 @@
                     </el-col>
                   </el-row>
                 </el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
-                <el-tab-pane label="数据分析" name="fifth"><batterysoc :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong v-if="fourthready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="数据分析" name="fifth"><batterysoc v-if="fifthready" :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -857,6 +857,8 @@ export default {
   data() {
     return {
       activeName: 'first',
+      fifthready: false,
+      fourthready: false,
       // 遮罩层
       loading: true,
       // 电池规格信息
@@ -898,12 +900,17 @@ export default {
       console.log('cunchu pkid=', this.pkgid)
     }
     this.moveTrack.pkg_id = this.pkgid
+
     this.getdevinfo()
   },
   mounted() {},
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event)
+      if (tab._props.label === '数据分析') {
+        this.fifthready = true
+      } else if (tab._props.label === '运动轨迹') {
+        this.fourthready = true
+      }
     },
     /** 查询电池列表 */
     getdevinfo() {
