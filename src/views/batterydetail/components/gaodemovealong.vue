@@ -50,11 +50,9 @@ export default {
     }
   },
   created() {
-    setTimeout(() => {
-      this.queryParams = this.dataInit
-      this.ISdata = true
-      this.getTrackData()
-    }, 1000)
+    this.queryParams = this.dataInit
+    this.ISdata = true
+    this.getTrackData()
   },
   methods: {
     getTrackData() {

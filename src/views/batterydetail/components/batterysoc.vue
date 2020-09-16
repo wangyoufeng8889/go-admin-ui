@@ -63,28 +63,24 @@ export default {
     }
   },
   created() {
-    setTimeout(() => {
-      this.queryParams = this.dataInit
-      this.getSOCData()
-    }, 1000)
+    this.queryParams = this.dataInit
+    this.getSOCData()
   },
   methods: {
     getSOCData() {
-      this.loading = false
+      // this.loading = false
       console.log(this.queryParams, 'this.queryParams')
       getBatterySOCInfo(this.queryParams).then(response => {
         console.log('response=', response)
-        this.socdata = response.data
-        const listData = []
-        for (var i = 0; i < this.socdata.length; i++) {
+        this.chartData.rows = []
+        response.data.map(x => {
           const add = {}
-          add['日期'] = parseTime(this.socdata[i].dtu_uptime)
-          add['SOC'] = this.socdata[i].bms_soc / 100
-          add['电压'] = this.socdata[i].bms_voltage / 10
-          listData.push(add)
-        }
-        this.chartData.rows = listData
-        console.log('listData=', listData)
+          add['日期'] = parseTime(x.dtu_uptime)
+          add['SOC'] = x.bms_soc / 100
+          add['电压'] = x.bms_voltage / 10
+          this.chartData.rows.push(add)
+        })
+        console.log('chartData.rows=', this.chartData.rows)
         this.loading = true
       })
     },
