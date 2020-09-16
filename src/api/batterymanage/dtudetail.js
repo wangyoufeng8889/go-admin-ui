@@ -7,3 +7,11 @@ export function getDtuDetailInfo(query) {
     params: query
   })
 }
+// 查询电池SOC
+export function getDtuCSQInfo(query) {
+  return request({
+    url: '/api/bm1/battery/dtudetail/dtucsq',
+    method: 'get',
+    params: query
+  })
+}

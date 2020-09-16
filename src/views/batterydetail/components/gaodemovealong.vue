@@ -54,7 +54,7 @@ export default {
       this.queryParams = this.dataInit
       this.ISdata = true
       this.getTrackData()
-    }, 3000)
+    }, 1000)
   },
   methods: {
     getTrackData() {

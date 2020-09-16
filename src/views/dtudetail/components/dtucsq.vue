@@ -12,7 +12,7 @@
           :default-time="['08:00:00', '20:00:00']"
         />
       </span>
-      <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findSOCData">搜索</el-button>
+      <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findCSQData">搜索</el-button>
     </div>
     <div v-if="loading" id="chartsoc">
       <ve-line :data="chartData" :settings="chartSettings" />
@@ -22,7 +22,7 @@
 
 <script>
 // NPM 方式
-import { getBatterySOCInfo } from '@/api/batterymanage/batterydetail'
+import { getDtuCSQInfo } from '@/api/batterymanage/dtudetail'
 import { parseTime } from '@/utils/index.js'
 import VeLine from 'v-charts/lib/line'
 // import carUrl from 'https://webapi.amap.com/images/car.png'
@@ -44,7 +44,7 @@ export default {
       },
       socdata: [],
       chartData: {
-        columns: ['日期', 'SOC', '电压'],
+        columns: ['日期', 'csq', '外接电压'],
         rows: [
           // { '日期': '2020-09-01 12:00:01', 'SOC': 10, '电压': 630},
           // { '日期': '2020-09-02 12:00:01', 'SOC': 20, '电压': 640},
@@ -56,31 +56,31 @@ export default {
       },
       chartSettings: {
         xAxisType: 'time',
-        yAxisType: ['normal', 'percent'],
-        yAxisName: ['电压', 'SOC'],
-        axisSite: { right: ['SOC'] }
+        yAxisType: ['normal', 'normal'],
+        yAxisName: ['外接电压', 'csq'],
+        axisSite: { right: ['csq'] }
       }
     }
   },
   created() {
     setTimeout(() => {
       this.queryParams = this.dataInit
-      this.getSOCData()
+      this.getcsqData()
     }, 1000)
   },
   methods: {
-    getSOCData() {
+    getcsqData() {
       this.loading = false
       console.log(this.queryParams, 'this.queryParams')
-      getBatterySOCInfo(this.queryParams).then(response => {
+      getDtuCSQInfo(this.queryParams).then(response => {
         console.log('response=', response)
         this.socdata = response.data
         const listData = []
         for (var i = 0; i < this.socdata.length; i++) {
           const add = {}
           add['日期'] = parseTime(this.socdata[i].dtu_uptime)
-          add['SOC'] = this.socdata[i].bms_soc / 100
-          add['电压'] = this.socdata[i].bms_voltage / 10
+          add['csq'] = this.socdata[i].dtu_csq
+          add['外接电压'] = this.socdata[i].dtu_pluginVoltage
           listData.push(add)
         }
         this.chartData.rows = listData
@@ -88,12 +88,12 @@ export default {
         this.loading = true
       })
     },
-    findSOCData() {
+    findCSQData() {
       if (this.buckTime.length !== 0) {
         this.queryParams.startTime = this.buckTime[0]
         this.queryParams.endTime = this.buckTime[1]
       }
-      this.getSOCData()
+      this.getcsqData()
     },
     msg() {
       this.$notify.info({

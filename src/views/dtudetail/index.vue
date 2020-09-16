@@ -282,6 +282,7 @@
                   </el-row>
                 </el-tab-pane>
                 <el-tab-pane label="运动轨迹" name="third"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="数据分析" name="fourth"><dtucsq :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -293,11 +294,12 @@
 <script>
 import gdmap from './components/gaodemap'
 import gaodemovealong from './components/gaodemovealong'
+import dtucsq from './components/dtucsq'
 import { getDtuDetailInfo } from '@/api/batterymanage/dtudetail'
 
 export default {
   name: 'Dtudetail',
-  components: { gdmap, gaodemovealong },
+  components: { gdmap, gaodemovealong, dtucsq },
   props: [],
   data() {
     return {
