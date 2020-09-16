@@ -33,6 +33,10 @@ import BasicLayout from '@/layout/BasicLayout'
 
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
+
+import VCharts from 'v-charts'
+Vue.use(VCharts)
+
 import VueAMap from 'vue-amap'
 // 初始化vue-amap
 VueAMap.initAMapApiLoader({

@@ -835,6 +835,7 @@
                   </el-row>
                 </el-tab-pane>
                 <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="数据分析" name="fifth"><batterysoc :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -846,11 +847,12 @@
 <script>
 import gdmap from './components/gaodemap'
 import gaodemovealong from './components/gaodemovealong'
+import batterysoc from './components/batterysoc'
 import { getBatteryDetailInfo } from '@/api/batterymanage/batterydetail'
 
 export default {
   name: 'Batterydetail',
-  components: { gdmap, gaodemovealong },
+  components: { gdmap, gaodemovealong, batterysoc },
   props: [],
   data() {
     return {
