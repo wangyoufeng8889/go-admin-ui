@@ -1,6 +1,6 @@
 <template>
   <div class="amap-page-container">
-    <div v-if="ISdata" :style="{width:'100%',height:'300px'}">
+    <div v-if="ISdata" :style="{width:'100%',height:'300px', overflow: 'hidden'}">
       <el-amap vid="amap" :plugin="plugin" class="amap-demo" :center="center" :zoom="zoom">
         <el-amap-marker
           vid="marker"
@@ -35,7 +35,6 @@ export default {
   },
   created() {
     setTimeout(() => {
-      // this.center = this.dataInit
       this.queryParams = this.dataInit
       console.log('map this.pkg_id', this.queryParams)
       // 去后端提取定位
@@ -51,7 +50,6 @@ export default {
         add.push(this.trackdata[0].dtu_longitude)
         add.push(this.trackdata[0].dtu_latitude)
         console.log('addcenter', add)
-        // this.mapcenter.center.push(add)
         this.center = add
         console.log('mapcenter=', this.center)
         this.ISdata = true

@@ -151,7 +151,7 @@
               </el-col>
               <el-col :span="12">
                 <div style="width:100%;height:300px;overflow:hidden">
-                  <gdmap :data-init="moveTrack" />
+                  <gdmap v-if="loading" :data-init="moveTrack" />
                 </div>
               </el-col>
             </el-row>
@@ -860,7 +860,7 @@ export default {
       fifthready: false,
       fourthready: false,
       // 遮罩层
-      loading: true,
+      loading: false,
       // 电池规格信息
       batteryDetailInfo: {},
 
@@ -900,7 +900,7 @@ export default {
       console.log('cunchu pkid=', this.pkgid)
     }
     this.moveTrack.pkg_id = this.pkgid
-
+    this.loading = true
     this.getdevinfo()
   },
   mounted() {},
@@ -914,14 +914,9 @@ export default {
     },
     /** 查询电池列表 */
     getdevinfo() {
-      this.loading = true
-
-      // const bms_specInfoId1 = this.queryParams.bms_specInfoId
       this.queryParams.pkg_id = this.pkgid
       getBatteryDetailInfo(this.queryParams).then(response => {
         this.batteryDetailInfo = response.data[0]
-        this.loading = false
-        // this.pkgid = this.batteryDetailInfo.pkg_id
         console.log('getBatteryDetailInfo', response)
       })
     },

@@ -63,14 +63,11 @@ export default {
     }
   },
   created() {
-    setTimeout(() => {
-      this.queryParams = this.dataInit
-      this.getcsqData()
-    }, 1000)
+    this.queryParams = this.dataInit
+    this.getcsqData()
   },
   methods: {
     getcsqData() {
-      this.loading = false
       console.log(this.queryParams, 'this.queryParams')
       getDtuCSQInfo(this.queryParams).then(response => {
         console.log('response=', response)

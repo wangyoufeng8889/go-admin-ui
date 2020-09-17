@@ -1,6 +1,6 @@
 <template>
   <div class="amap-page-container">
-    <div v-if="ISdata" :style="{width:'100%',height:'300px', overflow: 'hidden'}">
+    <div v-if="loading" :style="{width:'100%',height:'300px', overflow: 'hidden'}">
       <el-amap vid="amap" class="amap-demo" :center="center" :zoom="zoom">
         <el-amap-marker
           vid="marker"
@@ -17,7 +17,7 @@ export default {
   props: ['dataInit'],
   data() {
     return {
-      ISdata: false,
+      loading: false,
       label: {
         content: '',
         offset: [10, 12]
@@ -54,7 +54,7 @@ export default {
         // this.mapcenter.center.push(add)
         this.center = add
         console.log('mapcenter=', this.center)
-        this.ISdata = true
+        this.loading = true
       })
     }
   }

@@ -118,7 +118,7 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <gdmap :data-init="moveTrack" />
+                  <gdmap v-if="loading" :data-init="moveTrack" />
                 </div>
               </el-col>
             </el-row>
@@ -281,8 +281,8 @@
                     </el-col>
                   </el-row>
                 </el-tab-pane>
-                <el-tab-pane label="运动轨迹" name="third"><gaodemovealong :data-init="moveTrack" /></el-tab-pane>
-                <el-tab-pane label="数据分析" name="fourth"><dtucsq :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="运动轨迹" name="third"><gaodemovealong v-if="thirdready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="数据分析" name="fourth"><dtucsq v-if="fourthready" :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -305,7 +305,7 @@ export default {
     return {
       activeName: 'first',
       // 遮罩层
-      loading: true,
+      loading: false,
       // 电池规格信息
       dtuDetailInfo: {},
 
@@ -345,23 +345,23 @@ export default {
       console.log('cunchu pkid=', this.dtuid)
     }
     this.moveTrack.dtu_id = this.dtuid
+    this.loading = true
     this.getdevinfo()
   },
   mounted() {},
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event)
+      if (tab._props.label === '数据分析') {
+        this.fourthready = true
+      } else if (tab._props.label === '运动轨迹') {
+        this.thirdready = true
+      }
     },
     /** 查询电池列表 */
     getdevinfo() {
-      this.loading = true
-
-      // const bms_specInfoId1 = this.queryParams.tdtu_specInfoId
       this.queryParams.dtu_id = this.dtuid
       getDtuDetailInfo(this.queryParams).then(response => {
         this.dtuDetailInfo = response.data[0]
-        this.loading = false
-        // this.dtuid = this.dtuDetailInfo.dtu_id
         console.log('getDtuDetailInfo', response)
       })
     },

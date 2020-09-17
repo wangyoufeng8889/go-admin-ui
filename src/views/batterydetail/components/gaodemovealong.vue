@@ -31,7 +31,6 @@ export default {
   data() {
     return {
       // 遮罩层
-      loading: true,
       buckTime: [],
       carUrl: 'https://webapi.amap.com/images/car.png',
       mapcenter: {
@@ -56,7 +55,6 @@ export default {
   },
   methods: {
     getTrackData() {
-      this.loading = true
       console.log(this.queryParams, 'this.queryParams')
       getBatteryMoveInfo(this.queryParams).then(response => {
         console.log('response=', response)
@@ -69,13 +67,11 @@ export default {
           listData.push(add)
         }
         this.gpsData = listData
-        this.loading = false
         console.log('gpsData=', this.gpsData)
         const add = []
         add.push(this.trackdata[0].dtu_longitude)
         add.push(this.trackdata[0].dtu_latitude)
         console.log('addcenter', add)
-        // this.mapcenter.center.push(add)
         this.mapcenter.center = add
         console.log('mapcenter=', this.mapcenter)
         this.initPage()

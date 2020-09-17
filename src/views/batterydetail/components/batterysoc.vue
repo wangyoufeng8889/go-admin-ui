@@ -68,7 +68,6 @@ export default {
   },
   methods: {
     getSOCData() {
-      // this.loading = false
       console.log(this.queryParams, 'this.queryParams')
       getBatterySOCInfo(this.queryParams).then(response => {
         console.log('response=', response)
