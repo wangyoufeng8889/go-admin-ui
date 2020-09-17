@@ -108,14 +108,14 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['system:syspost:edit']"
+                v-permisaction="['system:dtulist:query']"
                 size="mini"
                 type="text"
                 icon="el-icon-view"
                 @click="handleViewDetail(scope.row)"
               >详情</el-button>
               <el-button
-                v-permisaction="['system:syspost:remove']"
+                v-permisaction="['system:dtulist:remove']"
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
