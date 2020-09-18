@@ -17,3 +17,19 @@ export function getBatterySOCInfo(query) {
     params: query
   })
 }
+// 查询电池单体
+export function getBatteryCellInfo(query) {
+  return request({
+    url: '/api/bm1/battery/batterydetail/batterycell',
+    method: 'get',
+    params: query
+  })
+}
+// 查询电池温度
+export function getBatteryTemperInfo(query) {
+  return request({
+    url: '/api/bm1/battery/batterydetail/batterytemper',
+    method: 'get',
+    params: query
+  })
+}

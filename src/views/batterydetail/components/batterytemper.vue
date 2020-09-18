@@ -12,9 +12,9 @@
           :default-time="['08:00:00', '20:00:00']"
         />
       </span>
-      <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findSOCData">搜索</el-button>
+      <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findTemperData">搜索</el-button>
     </div>
-    <div v-if="loading" id="chartsoc">
+    <div v-if="loading" id="chartcell">
       <ve-line :data="chartData" :settings="chartSettings" />
     </div>
   </div>
@@ -22,7 +22,7 @@
 
 <script>
 // NPM 方式
-import { getBatterySOCInfo } from '@/api/batterymanage/batterydetail'
+import { getBatteryTemperInfo } from '@/api/batterymanage/batterydetail'
 import { parseTime } from '@/utils/index.js'
 import VeLine from 'v-charts/lib/line'
 // import carUrl from 'https://webapi.amap.com/images/car.png'
@@ -44,58 +44,52 @@ export default {
       },
       socdata: [],
       chartData: {
-        columns: ['日期', 'SOC', '电压(V)', '电流(A)', '充放电状态(0:搁置,1:充电,2:放电)'],
-        rows: [
-          // { '日期': '2020-09-01 12:00:01', 'SOC': 10, '电压': 630},
-          // { '日期': '2020-09-02 12:00:01', 'SOC': 20, '电压': 640},
-          // { '日期': '2020-09-03 12:00:01', 'SOC': 30, '电压': 640},
-          // { '日期': '2020-09-05 12:00:01', 'SOC': 40, '电压': 640},
-          // { '日期': '2020-09-10 12:00:01', 'SOC': 80, '电压': 640},
-          // { '日期': '2020-09-20 12:00:01', 'SOC': 100, '电压': 640}
-        ]
+        columns: ['日期', '温度1(℃)', '温度2(℃)', '温度3(℃)', '温度4(℃)', '温度5(℃)', '温度6(℃)'],
+        rows: []
       },
       chartSettings: {
         xAxisType: 'time',
-        yAxisType: ['normal', 'percent'],
-        yAxisName: ['', 'SOC'],
-        axisSite: { right: ['SOC'] }
+        yAxisType: ['normal'],
+        yAxisName: ['温度(℃)']
       }
     }
   },
   created() {
     this.queryParams = this.dataInit
-    this.getSOCData()
+    this.getTemperData()
   },
   methods: {
-    getSOCData() {
+    getTemperData() {
       console.log(this.queryParams, 'this.queryParams')
-      getBatterySOCInfo(this.queryParams).then(response => {
+      getBatteryTemperInfo(this.queryParams).then(response => {
         console.log('response=', response)
         this.chartData.rows = []
         response.data.map(x => {
           const add = {}
           add['日期'] = parseTime(x.dtu_uptime)
-          add['SOC'] = x.bms_soc / 100
-          add['电压(V)'] = x.bms_voltage / 10
-          add['电流(A)'] = (x.bms_current - 3200) / 10
-          add['充放电状态(0:搁置,1:充电,2:放电)'] = x.bms_chargeStatus
+          add['温度1(℃)'] = x.bms_temperature1
+          add['温度2(℃)'] = x.bms_temperature2
+          add['温度3(℃)'] = x.bms_temperature3
+          add['温度4(℃)'] = x.bms_temperature4
+          add['温度5(℃)'] = x.bms_temperature5
+          add['温度6(℃)'] = x.bms_temperature6
           this.chartData.rows.push(add)
         })
         console.log('chartData.rows=', this.chartData.rows)
         this.loading = true
       })
     },
-    findSOCData() {
+    findTemperData() {
       if (this.buckTime.length !== 0) {
         this.queryParams.startTime = this.buckTime[0]
         this.queryParams.endTime = this.buckTime[1]
       }
-      this.getSOCData()
+      this.getTemperData()
     },
     msg() {
       this.$notify.info({
         title: '提示',
-        message: '暂无soc数据'
+        message: '暂无温度数据'
       })
     }
   }

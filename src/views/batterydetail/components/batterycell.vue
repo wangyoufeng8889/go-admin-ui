@@ -12,9 +12,9 @@
           :default-time="['08:00:00', '20:00:00']"
         />
       </span>
-      <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findSOCData">搜索</el-button>
+      <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findCellData">搜索</el-button>
     </div>
-    <div v-if="loading" id="chartsoc">
+    <div v-if="loading" id="chartcell">
       <ve-line :data="chartData" :settings="chartSettings" />
     </div>
   </div>
@@ -22,7 +22,7 @@
 
 <script>
 // NPM 方式
-import { getBatterySOCInfo } from '@/api/batterymanage/batterydetail'
+import { getBatteryCellInfo } from '@/api/batterymanage/batterydetail'
 import { parseTime } from '@/utils/index.js'
 import VeLine from 'v-charts/lib/line'
 // import carUrl from 'https://webapi.amap.com/images/car.png'
@@ -44,58 +44,66 @@ export default {
       },
       socdata: [],
       chartData: {
-        columns: ['日期', 'SOC', '电压(V)', '电流(A)', '充放电状态(0:搁置,1:充电,2:放电)'],
-        rows: [
-          // { '日期': '2020-09-01 12:00:01', 'SOC': 10, '电压': 630},
-          // { '日期': '2020-09-02 12:00:01', 'SOC': 20, '电压': 640},
-          // { '日期': '2020-09-03 12:00:01', 'SOC': 30, '电压': 640},
-          // { '日期': '2020-09-05 12:00:01', 'SOC': 40, '电压': 640},
-          // { '日期': '2020-09-10 12:00:01', 'SOC': 80, '电压': 640},
-          // { '日期': '2020-09-20 12:00:01', 'SOC': 100, '电压': 640}
-        ]
+        columns: ['日期', '单体1', '单体2', '单体3', '单体4', '单体5', '单体6', '单体7', '单体8', '单体9', '单体10', '单体11', '单体12', '单体13', '单体14', '单体15', '单体16', '单体17', '单体18', '单体19', '单体20'],
+        rows: []
       },
       chartSettings: {
         xAxisType: 'time',
-        yAxisType: ['normal', 'percent'],
-        yAxisName: ['', 'SOC'],
-        axisSite: { right: ['SOC'] }
+        yAxisType: ['normal'],
+        yAxisName: ['电压(mV)']
       }
     }
   },
   created() {
     this.queryParams = this.dataInit
-    this.getSOCData()
+    this.getCellData()
   },
   methods: {
-    getSOCData() {
+    getCellData() {
       console.log(this.queryParams, 'this.queryParams')
-      getBatterySOCInfo(this.queryParams).then(response => {
+      getBatteryCellInfo(this.queryParams).then(response => {
         console.log('response=', response)
         this.chartData.rows = []
         response.data.map(x => {
           const add = {}
           add['日期'] = parseTime(x.dtu_uptime)
-          add['SOC'] = x.bms_soc / 100
-          add['电压(V)'] = x.bms_voltage / 10
-          add['电流(A)'] = (x.bms_current - 3200) / 10
-          add['充放电状态(0:搁置,1:充电,2:放电)'] = x.bms_chargeStatus
+          add['单体1'] = x.bms_cellVoltage1
+          add['单体2'] = x.bms_cellVoltage2
+          add['单体3'] = x.bms_cellVoltage3
+          add['单体4'] = x.bms_cellVoltage4
+          add['单体5'] = x.bms_cellVoltage5
+          add['单体6'] = x.bms_cellVoltage6
+          add['单体7'] = x.bms_cellVoltage7
+          add['单体8'] = x.bms_cellVoltage8
+          add['单体9'] = x.bms_cellVoltage9
+          add['单体10'] = x.bms_cellVoltage10
+          add['单体11'] = x.bms_cellVoltage11
+          add['单体12'] = x.bms_cellVoltage12
+          add['单体13'] = x.bms_cellVoltage13
+          add['单体14'] = x.bms_cellVoltage14
+          add['单体15'] = x.bms_cellVoltage15
+          add['单体16'] = x.bms_cellVoltage16
+          add['单体17'] = x.bms_cellVoltage17
+          add['单体18'] = x.bms_cellVoltage18
+          add['单体19'] = x.bms_cellVoltage19
+          add['单体20'] = x.Bms_cellVoltage20
           this.chartData.rows.push(add)
         })
         console.log('chartData.rows=', this.chartData.rows)
         this.loading = true
       })
     },
-    findSOCData() {
+    findCellData() {
       if (this.buckTime.length !== 0) {
         this.queryParams.startTime = this.buckTime[0]
         this.queryParams.endTime = this.buckTime[1]
       }
-      this.getSOCData()
+      this.getCellData()
     },
     msg() {
       this.$notify.info({
         title: '提示',
-        message: '暂无soc数据'
+        message: '暂无单体数据'
       })
     }
   }

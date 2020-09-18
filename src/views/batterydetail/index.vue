@@ -835,7 +835,9 @@
                   </el-row>
                 </el-tab-pane>
                 <el-tab-pane label="运动轨迹" name="fourth"><gaodemovealong v-if="fourthready" :data-init="moveTrack" /></el-tab-pane>
-                <el-tab-pane label="数据分析" name="fifth"><batterysoc v-if="fifthready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="电量分析" name="fifth"><batterysoc v-if="fifthready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="单体分析" name="sixth"><batterycell v-if="sixthready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="温度分析" name="seventh"><batterytemper v-if="seventhready" :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -848,17 +850,21 @@
 import gdmap from './components/gaodemap'
 import gaodemovealong from './components/gaodemovealong'
 import batterysoc from './components/batterysoc'
+import batterycell from './components/batterycell'
+import batterytemper from './components/batterytemper'
 import { getBatteryDetailInfo } from '@/api/batterymanage/batterydetail'
 
 export default {
   name: 'Batterydetail',
-  components: { gdmap, gaodemovealong, batterysoc },
+  components: { gdmap, gaodemovealong, batterysoc, batterycell, batterytemper },
   props: [],
   data() {
     return {
       activeName: 'first',
       fifthready: false,
       fourthready: false,
+      sixthready: false,
+      seventhready: false,
       // 遮罩层
       loading: false,
       // 电池规格信息
@@ -906,10 +912,14 @@ export default {
   mounted() {},
   methods: {
     handleClick(tab, event) {
-      if (tab._props.label === '数据分析') {
-        this.fifthready = true
-      } else if (tab._props.label === '运动轨迹') {
+      if (tab._props.label === '运动轨迹') {
         this.fourthready = true
+      } else if (tab._props.label === '电量分析') {
+        this.fifthready = true
+      } else if (tab._props.label === '单体分析') {
+        this.sixthready = true
+      } else if (tab._props.label === '温度分析') {
+        this.seventhready = true
       }
     },
     /** 查询电池列表 */
