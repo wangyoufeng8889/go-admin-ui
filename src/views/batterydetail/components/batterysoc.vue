@@ -78,7 +78,7 @@ export default {
           add['SOC'] = x.bms_soc / 100
           add['电压(V)'] = x.bms_voltage / 10
           add['电流(A)'] = (x.bms_current - 3200) / 10
-          add['充放电状态(0:搁置,1:充电,2:放电)'] = x.bms_chargeStatus
+          add['充放电状态(0:搁置,1:放电,2:充电)'] = x.bms_chargeStatus
           this.chartData.rows.push(add)
         })
         console.log('chartData.rows=', this.chartData.rows)
