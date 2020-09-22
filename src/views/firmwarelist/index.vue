@@ -37,6 +37,7 @@
         <el-table v-loading="loading" :data="firmwareList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="30" align="lift" />
           <el-table-column label="固件名称" align="center" prop="firmwareName" width="400" />
+          <el-table-column label="内核" align="center" prop="coreVer" width="80" />
           <el-table-column label="版本号" align="center" prop="firmwareVer" width="80" />
           <el-table-column label="文件名" align="center" prop="fileName" width="400">
             <template slot-scope="scope">
@@ -83,17 +84,17 @@
 
       <!-- 添加固件文件话框 -->
       <el-dialog :title="title" :visible.sync="open" width="500px">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" :model="form" label-width="80px">
           <el-form-item label="选择固件" prop="logo">
-            <el-input v-model="form.file" type="hidden" style="display: none" />
             <el-upload
-              class="upload-demo"
-              action="url"
+              class="upload-firmware"
+              :action="url"
+              :data="{type:'4'}"
+              :before-upload="handleUpload"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :before-remove="beforeRemove"
-              multiple
-              :limit="3"
+              :limit="1"
               :on-exceed="handleExceed"
               :file-list="fileList"
             >
@@ -102,10 +103,13 @@
             </el-upload>
           </el-form-item>
           <el-form-item label="固件名称" prop="roleName">
-            <el-input v-model="form.firmwareName" placeholder="请输入固件名称" :disabled="isEdit" />
+            <el-input v-model="form.firmwareName" :disabled="true" />
           </el-form-item>
           <el-form-item label="固件版本" prop="roleName">
-            <el-input v-model="form.firmwareVer" placeholder="请输入固件版本" :disabled="isEdit" />
+            <el-input v-model="form.firmwareVer" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="内核版本" prop="roleName">
+            <el-input v-model="form.coreVer" :disabled="true" />
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -130,6 +134,7 @@ export default {
     return {
       // 文件上传地址
       url: process.env.VUE_APP_BASE_API + '/api/v1/public/uploadFile',
+      fileList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -198,7 +203,11 @@ export default {
         dtu_aliyunStatus: undefined,
         dtu_csq: undefined,
         dtu_errNbr: undefined,
-        remark: undefined
+        firmwareName: undefined,
+        firmwareVer: undefined,
+        coreVer: undefined,
+        remark: undefined,
+        fileName: undefined
       }
       this.resetForm('form')
     },
@@ -258,9 +267,20 @@ export default {
       this.reset()
       this.open = true
       this.title = '添加固件'
-      this.isEdit = false
     },
-
+    handleUpload(file) {
+      console.log('handleUpload', typeof file, file)
+      let filename = file.name
+      this.form.fileName = filename
+      this.form.firmwareVer = filename.match('\\d+.\\d+.\\d+')[0]
+      this.form.coreVer = filename.match('V\\d+')[0]
+      filename = filename.replace(this.form.firmwareVer, '')
+      filename = filename.replace(this.form.coreVer, '')
+      filename = filename.replace('.bin', '')
+      filename = filename.replace('.dfota', '')
+      this.form.firmwareName = filename.replace('__', '_')
+      console.log('handleUpload form', this.form)
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -273,7 +293,6 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     }
-
   }
 }
 </script>
