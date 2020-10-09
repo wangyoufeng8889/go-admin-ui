@@ -12,6 +12,7 @@
           :default-time="['08:00:00', '20:00:00']"
         />
       </span>
+      <span><span>当前里程：</span>{{ Math.round(this.dist)/1000 }}(KM)</span>
       <el-button type="primary" style="float: right; position: relative;left: -20px;" @click="findTrackData">搜索</el-button>
     </div>
     <div class="amap-page-container">
@@ -45,7 +46,8 @@ export default {
         endTime: undefined
       },
       trackdata: [],
-      gpsData: []
+      gpsData: [],
+      dist: undefined
     }
   },
   created() {
@@ -75,6 +77,8 @@ export default {
         this.mapcenter.center = add
         console.log('mapcenter=', this.mapcenter)
         this.initPage()
+        this.dist = AMap.GeometryUtil.distanceOfLine(listData)
+        console.log('dist=', this.dist)
       })
     },
     findTrackData() {
