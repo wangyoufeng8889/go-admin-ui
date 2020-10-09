@@ -12,7 +12,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="DTU类型" prop="dtu_type">
+          <el-form-item label="网络类型" prop="dtu_type">
             <el-select v-model="queryParams.dtu_type" placeholder="选择DTU类型" clearable size="small">
               <el-option
                 v-for="dict in dtu_typeTable"
@@ -22,8 +22,8 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="DTU安装类型" prop="dtu_setupType">
-            <el-select v-model="queryParams.dtu_setupType" placeholder="选择DTU类型" clearable size="small">
+          <el-form-item label="安装类型" prop="dtu_setupType">
+            <el-select v-model="queryParams.dtu_setupType" placeholder="选择DTU安装类型" clearable size="small">
               <el-option
                 v-for="dict in dtu_setupTypeTable"
                 :key="dict.dictValue"
