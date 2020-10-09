@@ -30,9 +30,9 @@
                       {{ dtuDetailInfo.dtu_errCode }}
                     </el-form-item>
                   </div>
-                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
+                  <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'" style="cursor:pointer" @click="gotobatterydetail(dtuDetailInfo.pkg_id)">
                     <el-form-item label="电池编号:">
-                      {{ dtuDetailInfo.pkg_id }}
+                      <a href="javascript:0" style="text-decoration: revert;">  {{ dtuDetailInfo.pkg_id }}</a>
                     </el-form-item>
                   </div>
                   <div v-if="dtuDetailInfo.dtu_bmsBindStatus == '1'">
@@ -377,6 +377,9 @@ export default {
         if (!valid) return
         // TODO 提交表单
       })
+    },
+    gotobatterydetail(batteryid) {
+      this.$router.push({ name: 'batterydetail', params: { id: batteryid }})
     },
     resetForm() {
       this.$refs['elForm'].resetFields()
