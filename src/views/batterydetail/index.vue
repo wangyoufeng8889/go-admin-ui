@@ -838,6 +838,7 @@
                 <el-tab-pane label="电量分析" name="fifth"><batterysoc v-if="fifthready" :data-init="moveTrack" /></el-tab-pane>
                 <el-tab-pane label="单体分析" name="sixth"><batterycell v-if="sixthready" :data-init="moveTrack" /></el-tab-pane>
                 <el-tab-pane label="温度分析" name="seventh"><batterytemper v-if="seventhready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="换电日志" name="eighth"><dtubmsbandlog v-if="eighthready" :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -852,11 +853,11 @@ import gaodemovealong from './components/gaodemovealong'
 import batterysoc from './components/batterysoc'
 import batterycell from './components/batterycell'
 import batterytemper from './components/batterytemper'
+import dtubmsbandlog from './components/dtubmsbandlog'
 import { getBatteryDetailInfo } from '@/api/batterymanage/batterydetail'
-
 export default {
   name: 'Batterydetail',
-  components: { gdmap, gaodemovealong, batterysoc, batterycell, batterytemper },
+  components: { gdmap, gaodemovealong, batterysoc, batterycell, batterytemper, dtubmsbandlog },
   props: [],
   data() {
     return {
@@ -865,6 +866,7 @@ export default {
       fourthready: false,
       sixthready: false,
       seventhready: false,
+      eighthready: false,
       // 遮罩层
       loading: false,
       // 电池规格信息
@@ -920,9 +922,11 @@ export default {
         this.sixthready = true
       } else if (tab._props.label === '温度分析') {
         this.seventhready = true
+      } else if (tab._props.label === '换电日志') {
+        this.eighthready = true
       }
     },
-    /** 查询电池列表 */
+    /** 查询电池详情 */
     getdevinfo() {
       this.queryParams.pkg_id = this.pkgid
       getBatteryDetailInfo(this.queryParams).then(response => {

@@ -1,7 +1,7 @@
 <template>
   <div class="amap-page-container">
     <div v-if="ISdata" :style="{width:'100%',height:'300px', overflow: 'hidden'}">
-      <el-amap vid="amap" :plugin="plugin" class="amap-demo" :center="center" :zoom="zoom">
+      <el-amap vid="amap" class="amap-demo" :center="center" :zoom="zoom">
         <el-amap-marker
           vid="marker"
           :position="center"

@@ -283,6 +283,7 @@
                 </el-tab-pane>
                 <el-tab-pane label="运动轨迹" name="third"><gaodemovealong v-if="thirdready" :data-init="moveTrack" /></el-tab-pane>
                 <el-tab-pane label="数据分析" name="fourth"><dtucsq v-if="fourthready" :data-init="moveTrack" /></el-tab-pane>
+                <el-tab-pane label="换电日志" name="fifth"><dtubmsbandlog v-if="fifthready" :data-init="moveTrack" /></el-tab-pane>
               </el-tabs>
             </el-row>
           </el-main>
@@ -295,15 +296,20 @@
 import gdmap from './components/gaodemap'
 import gaodemovealong from './components/gaodemovealong'
 import dtucsq from './components/dtucsq'
+import dtubmsbandlog from './components/dtubmsbandlog'
 import { getDtuDetailInfo } from '@/api/batterymanage/dtudetail'
 
 export default {
   name: 'Dtudetail',
-  components: { gdmap, gaodemovealong, dtucsq },
+  components: { gdmap, gaodemovealong, dtucsq, dtubmsbandlog },
   props: [],
   data() {
     return {
       activeName: 'first',
+      thirdready: false,
+      fourthready: false,
+      fifthready: false,
+
       // 遮罩层
       loading: false,
       // 电池规格信息
@@ -326,7 +332,7 @@ export default {
       },
       // 查询参数
       queryParams: {
-        tdtu_specInfoId: undefined,
+        dtu_specInfoId: undefined,
         dtu_id: undefined
       }
     }
@@ -355,6 +361,8 @@ export default {
         this.fourthready = true
       } else if (tab._props.label === '运动轨迹') {
         this.thirdready = true
+      } else if (tab._props.label === '换电日志') {
+        this.fifthready = true
       }
     },
     /** 查询电池列表 */

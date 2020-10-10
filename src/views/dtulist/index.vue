@@ -66,7 +66,7 @@
               <div v-if="scope.row.dtu_setupType == '1'">
                 车
               </div>
-              <div v-if="scope.row.dtu_setupType == '0'">
+              <div v-if="scope.row.dtu_setupType == '2'">
                 电池
               </div>
             </template>
