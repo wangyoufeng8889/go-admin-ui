@@ -117,7 +117,7 @@
                 </el-form>
               </el-col>
               <el-col :span="12">
-                <div>
+                <div style="height:300px">
                   <gdmap v-if="loading" :data-init="moveTrack" />
                 </div>
               </el-col>

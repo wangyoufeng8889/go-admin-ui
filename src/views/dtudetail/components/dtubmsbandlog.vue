@@ -16,13 +16,13 @@
     </div>
     <div v-if="loading" id="tabledtubmsband">
       <el-table :data="bandInfodata">
-        <el-table-column label="更换时间" align="center" prop="dtu_uptime" width="180">
+        <el-table-column label="更换时间" align="center" prop="dtu_uptime">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.dtu_uptime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="DTU编号" align="center" prop="dtu_id" width="400" />
-        <el-table-column label="电池编号" align="center" prop="pkg_id" width="400" />
+        <el-table-column label="DTU编号" align="center" prop="dtu_id" />
+        <el-table-column label="电池编号" align="center" prop="pkg_id" />
       </el-table>
     </div>
     <pagination
@@ -102,5 +102,8 @@ export default {
         line-height: 32px;
         width: 250px;
         padding-left: 8px;
+    }
+    .myTable .pagination-container{
+      height: 35px!important;
     }
 </style>
