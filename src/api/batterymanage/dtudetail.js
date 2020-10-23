@@ -15,3 +15,11 @@ export function getDtuCSQInfo(query) {
     params: query
   })
 }
+// 车辆锁控制
+export function setDtuLock(postParam) {
+  return request({
+    url: '/api/bm1/battery/dtudetail/dtulock',
+    method: 'post',
+    params: postParam
+  })
+}

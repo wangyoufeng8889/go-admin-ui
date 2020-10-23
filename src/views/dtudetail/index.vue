@@ -233,16 +233,31 @@
                           <div>
                             <el-form-item label="远程锁车:">
                               <div v-if="dtuDetailInfo.dtu_remoteLockCar == '1'">
-                                <el-tag type="success">已锁车</el-tag>
+                                <div v-if="dtuDetailInfo.dtu_aliyunStatus == '1'">
+                                  <el-button type="text" size="small" @click="setRemoteLock('0')">已锁车,点击解锁</el-button>
+                                </div>
+                                <div v-else>
+                                  <el-button type="text" size="small" disabled @click="setRemoteLock('0')">已锁车,点击解锁</el-button>
+                                </div>
                               </div>
                               <div v-else>
-                                <el-tag type="danger">未上锁</el-tag>
+                                <div v-if="dtuDetailInfo.dtu_aliyunStatus == '1'">
+                                  <el-button type="text" size="small" @click="setRemoteLock('1')">未上锁,点击锁车</el-button>
+                                </div>
+                                <div v-else>
+                                  <el-button type="text" size="small" disabled @click="setRemoteLock('1')">未上锁,点击锁车</el-button>
+                                </div>
                               </div>
                             </el-form-item>
                           </div>
                           <div>
                             <el-form-item label="电池包信息上报周期:">
-                              {{ dtuDetailInfo.dtu_pkgInfoReportPeriod }}
+                              <div v-if="dtuDetailInfo.dtu_aliyunStatus == '1'">
+                                <el-button type="text" @click="setReportPeriod">{{ dtuDetailInfo.dtu_pkgInfoReportPeriod }}</el-button>
+                              </div>
+                              <div v-else>
+                                <el-button type="text" disabled @click="setReportPeriod">{{ dtuDetailInfo.dtu_pkgInfoReportPeriod }}</el-button>
+                              </div>
                             </el-form-item>
                           </div>
                           <div>
@@ -297,7 +312,7 @@ import gdmap from './components/gaodemap'
 import gaodemovealong from './components/gaodemovealong'
 import dtucsq from './components/dtucsq'
 import dtubmsbandlog from './components/dtubmsbandlog'
-import { getDtuDetailInfo } from '@/api/batterymanage/dtudetail'
+import { getDtuDetailInfo, setDtuLock } from '@/api/batterymanage/dtudetail'
 
 export default {
   name: 'Dtudetail',
@@ -334,6 +349,13 @@ export default {
       queryParams: {
         dtu_specInfoId: undefined,
         dtu_id: undefined
+      },
+      // 查询参数
+      postParams: {
+        dtu_specInfoId: undefined,
+        dtu_id: undefined,
+        status: undefined,
+        reportperiod: undefined
       }
     }
   },
@@ -391,6 +413,68 @@ export default {
     },
     resetForm() {
       this.$refs['elForm'].resetFields()
+    },
+    setRemoteLock(lockstatus) {
+      var temptip, tempheader, tempfootsucc, tempfootfail
+      if (lockstatus === '0') {
+        temptip = '此操作将解锁车辆, 是否继续?'
+        tempheader = '解锁车辆'
+        tempfootsucc = '解锁成功'
+        tempfootfail = '解锁失败'
+      } else {
+        temptip = '此操作将上锁车辆, 是否继续?'
+        tempheader = '上锁车辆'
+        tempfootsucc = '上锁成功'
+        tempfootfail = '上锁失败'
+      }
+      this.$confirm(temptip, tempheader, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('goto dtu setRemoteLock', lockstatus)
+        this.postParams.dtu_id = this.dtuid
+        this.postParams.status = lockstatus
+        this.postParams.reportperiod = undefined
+        setDtuLock(this.postParams).then(response => {
+          console.log('setDtuLock', response)
+          this.dtuDetailInfo.dtu_remoteLockCar = lockstatus
+        })
+        this.$message({
+          type: 'success',
+          message: tempfootsucc
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: tempfootfail
+        })
+      })
+    },
+    setReportPeriod() {
+      this.$prompt('请输入时间(秒)', '设置上报周期', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // inputPattern: /^([1-4]\d{2})|bai(600)|([1-9]\d)$/,
+        inputErrorMessage: '时间不正确'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '你设置的周期是: ' + value + '秒'
+        })
+        this.postParams.dtu_id = this.dtuid
+        this.postParams.reportperiod = value
+        this.postParams.status = undefined
+        setDtuLock(this.postParams).then(response => {
+          console.log('setDtuLock', response)
+          this.dtuDetailInfo.dtu_pkgInfoReportPeriod = value
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        })
+      })
     }
   }
 }
